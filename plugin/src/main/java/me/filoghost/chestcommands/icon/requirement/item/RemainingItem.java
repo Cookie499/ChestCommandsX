@@ -12,13 +12,11 @@ public class RemainingItem {
 
     private final int slotIndex;
     private final Material material;
-    private final short durability;
     private int amount;
 
     public RemainingItem(int slotIndex, ItemStack item) {
         this.slotIndex = slotIndex;
         this.material = item.getType();
-        this.durability = item.getDurability();
         this.amount = item.getAmount();
     }
 
@@ -28,10 +26,6 @@ public class RemainingItem {
 
     public Material getMaterial() {
         return material;
-    }
-
-    public short getDurability() {
-        return durability;
     }
 
     public int getAmount() {

@@ -6,6 +6,7 @@
 package me.filoghost.chestcommands.action;
 
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.Colors;
 import org.bukkit.entity.Player;
 
@@ -19,7 +20,7 @@ public class SendMessageAction implements Action {
 
     @Override
     public void execute(Player player) {
-        player.sendMessage(message.getValue(player));
+        Text.send(player, message.getValue(player));
     }
 
 }

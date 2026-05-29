@@ -1,0 +1,24 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+        maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+        maven { url = uri("https://nexus.hc.to/content/repositories/pub_releases") }
+        maven { url = uri("https://ci.frostcast.net/plugin/repository/everything/") }
+        maven { url = uri("https://repo.codemc.io/repository/maven-public/") }
+        maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
+        maven { url = uri("https://maven.elmakers.com/repository/") }
+    }
+}
+
+rootProject.name = "chestcommands-parent"
+
+include("api", "plugin")

@@ -13,7 +13,6 @@ import me.filoghost.fcommons.config.ConfigErrors;
 import me.filoghost.fcommons.config.ConfigLoader;
 import me.filoghost.fcommons.config.exception.ConfigLoadException;
 import me.filoghost.fcommons.config.exception.ConfigSaveException;
-import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,7 +68,7 @@ public class V4_0_PlaceholdersUpgradeTask extends UpgradeTask {
 
             String[] parts = Strings.splitAndTrim(line, ":", 2);
             String placeholder = unquote(parts[0]);
-            String replacement = StringEscapeUtils.unescapeJava(unquote(parts[1]));
+            String replacement = unescapeJava(unquote(parts[1]));
 
             newPlaceholdersConfig.setString("placeholders." + placeholder, replacement);
             setSaveRequired();
@@ -98,6 +97,55 @@ public class V4_0_PlaceholdersUpgradeTask extends UpgradeTask {
         }
 
         return input;
+    }
+
+    private static String unescapeJava(String input) {
+        StringBuilder output = new StringBuilder(input.length());
+        boolean escaping = false;
+
+        for (int i = 0; i < input.length(); i++) {
+            char current = input.charAt(i);
+            if (!escaping) {
+                if (current == '\\') {
+                    escaping = true;
+                } else {
+                    output.append(current);
+                }
+                continue;
+            }
+
+            switch (current) {
+                case 'b':
+                    output.append('\b');
+                    break;
+                case 'n':
+                    output.append('\n');
+                    break;
+                case 'r':
+                    output.append('\r');
+                    break;
+                case 't':
+                    output.append('\t');
+                    break;
+                case 'f':
+                    output.append('\f');
+                    break;
+                case '\\':
+                case '\'':
+                case '"':
+                    output.append(current);
+                    break;
+                default:
+                    output.append(current);
+                    break;
+            }
+            escaping = false;
+        }
+
+        if (escaping) {
+            output.append('\\');
+        }
+        return output.toString();
     }
 
 }

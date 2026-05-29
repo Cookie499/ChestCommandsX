@@ -5,19 +5,25 @@
  */
 package me.filoghost.chestcommands.parsing;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.fcommons.Strings;
 import me.filoghost.fcommons.collection.EnumLookupRegistry;
 import me.filoghost.fcommons.collection.LookupRegistry;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
+import org.bukkit.Registry;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 
 public final class ItemMetaParser {
 
     private static final LookupRegistry<DyeColor> DYE_COLORS_REGISTRY = EnumLookupRegistry.fromEnumValues(DyeColor.class);
-    private static final LookupRegistry<PatternType> PATTERN_TYPES_REGISTRY = EnumLookupRegistry.fromEnumValues(PatternType.class);
+    private static final Registry<PatternType> PATTERNS = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN);
+    private static final LookupRegistry<PatternType> PATTERN_TYPES_REGISTRY = LookupRegistry.fromValues(PATTERNS, patternType -> {
+        return PATTERNS.getKeyOrThrow(patternType).getKey();
+    });
 
     private ItemMetaParser() {}
 

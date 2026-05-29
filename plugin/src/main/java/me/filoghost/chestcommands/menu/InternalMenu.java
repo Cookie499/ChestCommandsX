@@ -11,6 +11,7 @@ import me.filoghost.chestcommands.Permissions;
 import me.filoghost.chestcommands.action.Action;
 import me.filoghost.chestcommands.api.MenuView;
 import me.filoghost.chestcommands.config.Lang;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.collection.CollectionUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -81,7 +82,7 @@ public class InternalMenu extends BaseMenu {
     public void sendNoOpenPermissionMessage(CommandSender sender) {
         String noPermMessage = Lang.get().no_open_permission;
         if (noPermMessage != null && !noPermMessage.isEmpty()) {
-            sender.sendMessage(noPermMessage.replace("{permission}", this.openPermission));
+            Text.send(sender, noPermMessage.replace("{permission}", this.openPermission));
         }
     }
 

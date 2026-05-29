@@ -9,6 +9,8 @@ import me.filoghost.chestcommands.ChestCommands;
 import me.filoghost.chestcommands.Permissions;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
+import me.filoghost.chestcommands.util.FoliaScheduler;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.chestcommands.util.Utils;
 import me.filoghost.fcommons.collection.CaseInsensitiveString;
 import me.filoghost.fcommons.command.CommandContext;
@@ -44,28 +46,28 @@ public class CommandHandler extends AnnotatedSubCommandManager {
     @Override
     protected void sendNoArgsMessage(CommandContext context) {
         CommandSender sender = context.getSender();
-        sender.sendMessage(ChestCommands.CHAT_PREFIX);
-        sender.sendMessage(ChatColor.GREEN + "Version: " + ChatColor.GRAY + ChestCommands.getInstance().getDescription().getVersion());
-        sender.sendMessage(ChatColor.GREEN + "Developer: " + ChatColor.GRAY + "filoghost");
-        sender.sendMessage(ChatColor.GREEN + "Commands: " + ChatColor.GRAY + "/" + context.getRootLabel() + " help");
+        Text.send(sender, ChestCommands.CHAT_PREFIX);
+        Text.send(sender, ChatColor.GREEN + "Version: " + ChatColor.GRAY + ChestCommands.getInstance().getDescription().getVersion());
+        Text.send(sender, ChatColor.GREEN + "Developer: " + ChatColor.GRAY + "filoghost");
+        Text.send(sender, ChatColor.GREEN + "Commands: " + ChatColor.GRAY + "/" + context.getRootLabel() + " help");
     }
     
     @Override
     protected void sendUnknownSubCommandMessage(SubCommandContext context) {
-        context.getSender().sendMessage(ChatColor.RED + "Unknown sub-command \"" + context.getSubLabel() + "\". "
+        Text.send(context.getSender(), ChatColor.RED + "Unknown sub-command \"" + context.getSubLabel() + "\". "
                 + "Use \"/" + context.getRootLabel() + " help\" to see available commands.");
     }
 
     @Name("help")
     @Permission(Permissions.COMMAND_PREFIX + "help")
     public void help(CommandSender sender, SubCommandContext context) {
-        sender.sendMessage(ChestCommands.CHAT_PREFIX + "Commands:");
+        Text.send(sender, ChestCommands.CHAT_PREFIX + "Commands:");
         for (AnnotatedSubCommand subCommand : getSubCommands()) {
             if (subCommand == context.getSubCommand()) {
                 continue;
             }
             String usageText = getUsageText(context, subCommand);
-            sender.sendMessage(ChatColor.WHITE + usageText + ChatColor.GRAY + " - " + subCommand.getDescription());
+            Text.send(sender, ChatColor.WHITE + usageText + ChatColor.GRAY + " - " + subCommand.getDescription());
         }
     }
 
@@ -79,12 +81,12 @@ public class CommandHandler extends AnnotatedSubCommandManager {
         ErrorCollector errorCollector = ChestCommands.load();
 
         if (!errorCollector.hasErrors()) {
-            sender.sendMessage(ChestCommands.CHAT_PREFIX + "Plugin reloaded.");
+            Text.send(sender, ChestCommands.CHAT_PREFIX + "Plugin reloaded.");
         } else {
             errorCollector.logToConsole();
-            sender.sendMessage(ChestCommands.CHAT_PREFIX + ChatColor.RED + "Plugin reloaded with " + errorCollector.getErrorsCount() + " error(s).");
+            Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Plugin reloaded with " + errorCollector.getErrorsCount() + " error(s).");
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(ChestCommands.CHAT_PREFIX + ChatColor.RED + "Please check the console.");
+                Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Please check the console.");
             }
         }
     }
@@ -98,13 +100,13 @@ public class CommandHandler extends AnnotatedSubCommandManager {
 
         if (errorCollector.hasErrors()) {
             errorCollector.logToConsole();
-            sender.sendMessage(ChestCommands.CHAT_PREFIX + ChatColor.RED + "Last time the plugin loaded, "
+            Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Last time the plugin loaded, "
                     + errorCollector.getErrorsCount() + " error(s) were found.");
             if (!(sender instanceof ConsoleCommandSender)) {
-                sender.sendMessage(ChestCommands.CHAT_PREFIX + ChatColor.RED + "Errors were printed on the console.");
+                Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Errors were printed on the console.");
             }
         } else {
-            sender.sendMessage(ChestCommands.CHAT_PREFIX + ChatColor.GREEN + "Last plugin load was successful, no errors logged.");
+            Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.GREEN + "Last plugin load was successful, no errors logged.");
         }
     }
 
@@ -113,9 +115,9 @@ public class CommandHandler extends AnnotatedSubCommandManager {
     @Permission(Permissions.COMMAND_PREFIX + "list")
     @DisplayPriority(2)
     public void list(CommandSender sender) {
-        sender.sendMessage(ChestCommands.CHAT_PREFIX + "Loaded menus:");
+        Text.send(sender, ChestCommands.CHAT_PREFIX + "Loaded menus:");
         for (CaseInsensitiveString name : MenuManager.getMenuFileNames()) {
-            sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.WHITE + name);
+            Text.send(sender, ChatColor.GRAY + "- " + ChatColor.WHITE + name);
         }
     }
 
@@ -154,12 +156,12 @@ public class CommandHandler extends AnnotatedSubCommandManager {
         }
 
         if (sender.getName().equalsIgnoreCase(target.getName())) {
-            sender.sendMessage(ChatColor.GREEN + "Opening the menu " + menuName + ".");
+            Text.send(sender, ChatColor.GREEN + "Opening the menu " + menuName + ".");
         } else {
-            sender.sendMessage(ChatColor.GREEN + "Opening the menu " + menuName + " to " + target.getName() + ".");
+            Text.send(sender, ChatColor.GREEN + "Opening the menu " + menuName + " to " + target.getName() + ".");
         }
 
-        menu.open(target);
+        FoliaScheduler.runAtPlayer(target, () -> menu.open(target));
     }
 
 }

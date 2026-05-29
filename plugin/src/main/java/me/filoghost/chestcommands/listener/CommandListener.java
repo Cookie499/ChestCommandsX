@@ -7,6 +7,7 @@ package me.filoghost.chestcommands.listener;
 
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,7 +29,7 @@ public class CommandListener implements Listener {
         }
         
         event.setCancelled(true);
-        menu.openCheckingPermission(event.getPlayer());
+        FoliaScheduler.runAtPlayer(event.getPlayer(), () -> menu.openCheckingPermission(event.getPlayer()));
     }
     
     private static @Nullable String getCommandName(String fullCommand) {

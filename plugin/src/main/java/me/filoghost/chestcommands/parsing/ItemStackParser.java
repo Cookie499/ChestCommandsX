@@ -16,11 +16,9 @@ public class ItemStackParser {
 
     private final Material material;
     private int amount = 1;
-    private short durability = 0;
-    private boolean hasExplicitDurability = false;
 
     /*
-     * Reads item in the format "material:durability, amount".
+     * Reads item in the format "material, amount".
      */
     public ItemStackParser(String input, boolean parseAmount) throws ParseException {
         Preconditions.notNull(input, "input");
@@ -41,21 +39,8 @@ public class ItemStackParser {
             }
         }
 
-
-        // Read the optional durability
-        String[] splitByColons = Strings.splitAndTrim(input, ":", 2);
-
-        if (splitByColons.length > 1) {
-            try {
-                this.durability = NumberParser.getPositiveShort(splitByColons[1]);
-            } catch (ParseException e) {
-                throw new ParseException(Errors.Parsing.invalidDurability(splitByColons[1]), e);
-            }
-
-            this.hasExplicitDurability = true;
-
-            // Only keep the first part as input
-            input = splitByColons[0];
+        if (input.contains(":")) {
+            throw new ParseException("legacy material data values are no longer supported; use a modern 1.21 material name instead");
         }
 
         this.material = MaterialParser.parseMaterial(input);
@@ -75,16 +60,8 @@ public class ItemStackParser {
         return amount;
     }
 
-    public short getDurability() {
-        return durability;
-    }
-
-    public boolean hasExplicitDurability() {
-        return hasExplicitDurability;
-    }
-
     public ItemStack createStack() {
-        return new ItemStack(material, amount, durability);
+        return new ItemStack(material, amount);
     }
 
 }

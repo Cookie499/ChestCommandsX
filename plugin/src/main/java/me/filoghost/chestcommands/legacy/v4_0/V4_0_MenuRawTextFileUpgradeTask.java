@@ -26,7 +26,7 @@ public class V4_0_MenuRawTextFileUpgradeTask extends RegexUpgradeTask {
         renameInnerNode("id", "material");
 
         replaceOldAttribute("ID", AttributeType.MATERIAL);
-        replaceOldAttribute("DATA-VALUE", AttributeType.DURABILITY);
+        replaceOldAttribute("DATA-VALUE", AttributeType.DAMAGE);
         replaceOldAttribute("NBT", AttributeType.NBT_DATA);
         replaceOldAttribute("ENCHANTMENT", AttributeType.ENCHANTMENTS);
         replaceOldAttribute("COMMAND", AttributeType.ACTIONS);

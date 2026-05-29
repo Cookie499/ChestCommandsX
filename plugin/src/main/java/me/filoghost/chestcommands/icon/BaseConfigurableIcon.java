@@ -8,11 +8,9 @@ package me.filoghost.chestcommands.icon;
 import me.filoghost.chestcommands.api.Icon;
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
 import me.filoghost.chestcommands.placeholder.PlaceholderStringList;
-import me.filoghost.chestcommands.util.nbt.parser.MojangsonParseException;
-import me.filoghost.chestcommands.util.nbt.parser.MojangsonParser;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.Preconditions;
 import me.filoghost.fcommons.collection.CollectionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -23,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -32,16 +31,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class BaseConfigurableIcon implements Icon {
 
     private Material material;
     private int amount;
-    private short durability;
+    private Integer damage;
 
-    private String nbtData;
     private PlaceholderString name;
     private PlaceholderStringList lore;
     private Map<Enchantment, Integer> enchantments;
@@ -49,6 +49,9 @@ public abstract class BaseConfigurableIcon implements Icon {
     private PlaceholderString skullOwner;
     private DyeColor bannerColor;
     private List<Pattern> bannerPatterns;
+    private Integer customModelData;
+    private Boolean unbreakable;
+    private Set<ItemFlag> itemFlags;
     private boolean placeholdersEnabled;
 
     private ItemStack cachedRendering; // Cache the rendered item when possible and if state hasn't changed
@@ -91,30 +94,34 @@ public abstract class BaseConfigurableIcon implements Icon {
         return amount;
     }
 
+    @Deprecated
     public void setDurability(short durability) {
-        Preconditions.checkArgument(durability >= 0, "durability must be 0 or greater");
-        this.durability = durability;
-        cachedRendering = null;
+        setDamage(durability);
     }
 
+    @Deprecated
     public short getDurability() {
-        return durability;
+        return damage != null ? damage.shortValue() : 0;
     }
 
-    public void setNBTData(@Nullable String nbtData) {
-        if (nbtData != null) {
-            try {
-                MojangsonParser.parse(nbtData);
-            } catch (MojangsonParseException e) {
-                throw new IllegalArgumentException("invalid nbtData", e);
-            }
-        }
-        this.nbtData = nbtData;
+    public void setDamage(int damage) {
+        Preconditions.checkArgument(damage >= 0, "damage must be 0 or greater");
+        this.damage = damage;
         cachedRendering = null;
     }
 
+    public int getDamage() {
+        return damage != null ? damage : 0;
+    }
+
+    @Deprecated
+    public void setNBTData(@Nullable String nbtData) {
+        throw new UnsupportedOperationException("NBT-DATA is no longer supported on Minecraft 1.21");
+    }
+
+    @Deprecated
     public @Nullable String getNBTData() {
-        return nbtData;
+        return null;
     }
 
     public void setName(@Nullable String name) {
@@ -226,6 +233,21 @@ public abstract class BaseConfigurableIcon implements Icon {
         cachedRendering = null;
     }
 
+    public void setCustomModelData(@Nullable Integer customModelData) {
+        this.customModelData = customModelData;
+        cachedRendering = null;
+    }
+
+    public void setUnbreakable(boolean unbreakable) {
+        this.unbreakable = unbreakable;
+        cachedRendering = null;
+    }
+
+    public void setItemFlags(@Nullable List<ItemFlag> itemFlags) {
+        this.itemFlags = itemFlags != null ? new LinkedHashSet<>(itemFlags) : null;
+        cachedRendering = null;
+    }
+
     public boolean isPlaceholdersEnabled() {
         return placeholdersEnabled;
     }
@@ -272,22 +294,32 @@ public abstract class BaseConfigurableIcon implements Icon {
             return cachedRendering;
         }
 
-        ItemStack itemStack = new ItemStack(material, amount, durability);
+        ItemStack itemStack = new ItemStack(material, amount);
 
-        // First try to apply NBT data
-        if (nbtData != null) {
-            Bukkit.getUnsafe().modifyItemStack(itemStack, nbtData);
-        }
-
-        // Then apply data from config nodes, overwriting NBT data if there are conflicting values
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (itemMeta != null) {
-            itemMeta.setDisplayName(renderName(viewer));
-            itemMeta.setLore(renderLore(viewer));
+            if (renderName(viewer) != null) {
+                itemMeta.displayName(Text.component(renderName(viewer)));
+            }
+            if (renderLore(viewer) != null) {
+                itemMeta.lore(Text.components(renderLore(viewer)));
+            }
 
             if (leatherColor != null && itemMeta instanceof LeatherArmorMeta) {
                 ((LeatherArmorMeta) itemMeta).setColor(leatherColor);
+            }
+
+            if (damage != null && itemMeta instanceof Damageable) {
+                ((Damageable) itemMeta).setDamage(damage);
+            }
+
+            if (customModelData != null) {
+                itemMeta.setCustomModelData(customModelData);
+            }
+
+            if (unbreakable != null) {
+                itemMeta.setUnbreakable(unbreakable);
             }
 
             if (skullOwner != null && itemMeta instanceof SkullMeta) {
@@ -296,18 +328,14 @@ public abstract class BaseConfigurableIcon implements Icon {
             }
 
             if (itemMeta instanceof BannerMeta) {
-                BannerMeta bannerMeta = (BannerMeta) itemMeta;
-                if (bannerColor != null) {
-                    bannerMeta.setBaseColor(bannerColor);
-                }
                 if (bannerPatterns != null) {
                     ((BannerMeta) itemMeta).setPatterns(bannerPatterns);
                 }
             }
 
             // Hide all text details (damage, enchantments, potions, etc,)
-            if (itemMeta.getItemFlags().isEmpty()) {
-                itemMeta.addItemFlags(ItemFlag.values());
+            if (itemFlags != null && !itemFlags.isEmpty()) {
+                itemMeta.addItemFlags(itemFlags.toArray(new ItemFlag[0]));
             }
 
             itemStack.setItemMeta(itemMeta);

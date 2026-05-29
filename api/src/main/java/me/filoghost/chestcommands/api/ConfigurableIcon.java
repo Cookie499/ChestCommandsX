@@ -73,21 +73,23 @@ public interface ConfigurableIcon extends ClickableIcon {
     int getAmount();
 
     /**
-     * Sets the durability of the displayed item.
+     * Sets the damage of the displayed item.
      *
-     * @param durability the new durability
-     * @see ItemStack#setDurability(short)
+     * @param durability the new damage
      * @since 1
+     * @deprecated use modern item damage through menu configuration with DAMAGE
      */
+    @Deprecated
     void setDurability(short durability);
 
     /**
-     * Returns the durability of the displayed item.
+     * Returns the configured damage of the displayed item.
      *
-     * @return the current durability
-     * @see ItemStack#getDurability()
+     * @return the current damage
      * @since 1
+     * @deprecated use modern item damage through menu configuration with DAMAGE
      */
+    @Deprecated
     short getDurability();
 
     /**

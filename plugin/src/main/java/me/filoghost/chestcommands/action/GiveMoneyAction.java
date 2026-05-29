@@ -9,6 +9,7 @@ import me.filoghost.chestcommands.hook.VaultEconomyHook;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.parsing.NumberParser;
 import me.filoghost.chestcommands.parsing.ParseException;
+import me.filoghost.chestcommands.util.Text;
 import org.bukkit.entity.Player;
 
 public class GiveMoneyAction implements Action {
@@ -24,7 +25,7 @@ public class GiveMoneyAction implements Action {
         if (VaultEconomyHook.INSTANCE.isEnabled()) {
             VaultEconomyHook.giveMoney(player, moneyToGive);
         } else {
-            player.sendMessage(Errors.User.configurationError("Vault with a compatible economy plugin not found"));
+            Text.send(player, Errors.User.configurationError("Vault with a compatible economy plugin not found"));
         }
     }
 

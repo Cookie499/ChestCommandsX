@@ -9,6 +9,7 @@ import me.filoghost.chestcommands.ChestCommands;
 import me.filoghost.chestcommands.legacy.UpgradeExecutorException;
 import me.filoghost.chestcommands.legacy.upgrade.UpgradeTaskException;
 import me.filoghost.chestcommands.parsing.ParseException;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.ExceptionUtils;
 import me.filoghost.fcommons.config.exception.ConfigException;
 import me.filoghost.fcommons.config.exception.ConfigSyntaxException;
@@ -39,7 +40,7 @@ public class PrintableErrorCollector extends ErrorCollector {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(output.toString());
+        Text.send(Bukkit.getConsoleSender(), output.toString());
     }
 
     private ErrorPrintInfo getErrorPrintInfo(int index, ErrorLog error) {

@@ -11,6 +11,7 @@ import me.filoghost.chestcommands.api.MenuView;
 import me.filoghost.chestcommands.inventory.ArrayGrid;
 import me.filoghost.chestcommands.inventory.DefaultMenuView;
 import me.filoghost.chestcommands.inventory.Grid;
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.fcommons.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -53,10 +54,14 @@ public abstract class BaseMenu implements Menu {
     @Override
     public void refreshOpenViews() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            DefaultMenuView menuView = MenuManager.getOpenMenuView(player);
-            if (menuView != null && menuView.getMenu() == this) {
-                menuView.refresh();
-            }
+            FoliaScheduler.runAtPlayer(player, () -> refreshOpenView(player));
+        }
+    }
+
+    private void refreshOpenView(Player player) {
+        DefaultMenuView menuView = MenuManager.getOpenMenuView(player);
+        if (menuView != null && menuView.getMenu() == this) {
+            menuView.refresh();
         }
     }
 

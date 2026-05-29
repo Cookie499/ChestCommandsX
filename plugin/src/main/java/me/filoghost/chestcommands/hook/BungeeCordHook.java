@@ -6,8 +6,8 @@
 package me.filoghost.chestcommands.hook;
 
 import me.filoghost.chestcommands.ChestCommands;
+import me.filoghost.chestcommands.util.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -36,7 +36,7 @@ public enum BungeeCordHook implements PluginHook {
         INSTANCE.checkEnabledState();
 
         if (server.length() == 0) {
-            player.sendMessage(ChatColor.RED + "Target server was an empty string, cannot connect to it.");
+            Text.send(player, "&cTarget server was an empty string, cannot connect to it.");
             return;
         }
 

@@ -5,43 +5,53 @@
  */
 package me.filoghost.chestcommands.parsing;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.fcommons.Strings;
-import me.filoghost.fcommons.collection.LookupRegistry;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class EnchantmentParser {
 
-    private static final LookupRegistry<Enchantment> ENCHANTMENTS_REGISTRY;
+    private static final Map<String, Enchantment> ENCHANTMENTS = new HashMap<>();
 
     static {
-        ENCHANTMENTS_REGISTRY = LookupRegistry.fromValues(Enchantment.values(), Enchantment::getName);
+        Registry<Enchantment> enchantments = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        for (Enchantment enchantment : enchantments) {
+            ENCHANTMENTS.put(normalize(enchantments.getKeyOrThrow(enchantment).getKey()), enchantment);
+            ENCHANTMENTS.put(normalize(enchantments.getKeyOrThrow(enchantment).toString()), enchantment);
+        }
 
         // Add aliases
-        ENCHANTMENTS_REGISTRY.put("Protection", Enchantment.PROTECTION_ENVIRONMENTAL);
-        ENCHANTMENTS_REGISTRY.put("Fire Protection", Enchantment.PROTECTION_FIRE);
-        ENCHANTMENTS_REGISTRY.put("Feather Falling", Enchantment.PROTECTION_FALL);
-        ENCHANTMENTS_REGISTRY.put("Blast Protection", Enchantment.PROTECTION_EXPLOSIONS);
-        ENCHANTMENTS_REGISTRY.put("Projectile Protection", Enchantment.PROTECTION_PROJECTILE);
-        ENCHANTMENTS_REGISTRY.put("Respiration", Enchantment.OXYGEN);
-        ENCHANTMENTS_REGISTRY.put("Aqua Affinity", Enchantment.WATER_WORKER);
-        ENCHANTMENTS_REGISTRY.put("Thorns", Enchantment.THORNS);
-        ENCHANTMENTS_REGISTRY.put("Sharpness", Enchantment.DAMAGE_ALL);
-        ENCHANTMENTS_REGISTRY.put("Smite", Enchantment.DAMAGE_UNDEAD);
-        ENCHANTMENTS_REGISTRY.put("Bane Of Arthropods", Enchantment.DAMAGE_ARTHROPODS);
-        ENCHANTMENTS_REGISTRY.put("Knockback", Enchantment.KNOCKBACK);
-        ENCHANTMENTS_REGISTRY.put("Fire Aspect", Enchantment.FIRE_ASPECT);
-        ENCHANTMENTS_REGISTRY.put("Looting", Enchantment.LOOT_BONUS_MOBS);
-        ENCHANTMENTS_REGISTRY.put("Efficiency", Enchantment.DIG_SPEED);
-        ENCHANTMENTS_REGISTRY.put("Silk Touch", Enchantment.SILK_TOUCH);
-        ENCHANTMENTS_REGISTRY.put("Unbreaking", Enchantment.DURABILITY);
-        ENCHANTMENTS_REGISTRY.put("Fortune", Enchantment.LOOT_BONUS_BLOCKS);
-        ENCHANTMENTS_REGISTRY.put("Power", Enchantment.ARROW_DAMAGE);
-        ENCHANTMENTS_REGISTRY.put("Punch", Enchantment.ARROW_KNOCKBACK);
-        ENCHANTMENTS_REGISTRY.put("Flame", Enchantment.ARROW_FIRE);
-        ENCHANTMENTS_REGISTRY.put("Infinity", Enchantment.ARROW_INFINITE);
-        ENCHANTMENTS_REGISTRY.put("Lure", Enchantment.LURE);
-        ENCHANTMENTS_REGISTRY.put("Luck Of The Sea", Enchantment.LUCK);
+        putAlias("Protection", Enchantment.PROTECTION);
+        putAlias("Fire Protection", Enchantment.FIRE_PROTECTION);
+        putAlias("Feather Falling", Enchantment.FEATHER_FALLING);
+        putAlias("Blast Protection", Enchantment.BLAST_PROTECTION);
+        putAlias("Projectile Protection", Enchantment.PROJECTILE_PROTECTION);
+        putAlias("Respiration", Enchantment.RESPIRATION);
+        putAlias("Aqua Affinity", Enchantment.AQUA_AFFINITY);
+        putAlias("Thorns", Enchantment.THORNS);
+        putAlias("Sharpness", Enchantment.SHARPNESS);
+        putAlias("Smite", Enchantment.SMITE);
+        putAlias("Bane Of Arthropods", Enchantment.BANE_OF_ARTHROPODS);
+        putAlias("Knockback", Enchantment.KNOCKBACK);
+        putAlias("Fire Aspect", Enchantment.FIRE_ASPECT);
+        putAlias("Looting", Enchantment.LOOTING);
+        putAlias("Efficiency", Enchantment.EFFICIENCY);
+        putAlias("Silk Touch", Enchantment.SILK_TOUCH);
+        putAlias("Unbreaking", Enchantment.UNBREAKING);
+        putAlias("Fortune", Enchantment.FORTUNE);
+        putAlias("Power", Enchantment.POWER);
+        putAlias("Punch", Enchantment.PUNCH);
+        putAlias("Flame", Enchantment.FLAME);
+        putAlias("Infinity", Enchantment.INFINITY);
+        putAlias("Lure", Enchantment.LURE);
+        putAlias("Luck Of The Sea", Enchantment.LUCK_OF_THE_SEA);
     }
 
     public static EnchantmentDetails parseEnchantment(String input) throws ParseException {
@@ -58,13 +68,24 @@ public class EnchantmentParser {
             input = levelSplit[0];
         }
 
-        Enchantment enchantment = ENCHANTMENTS_REGISTRY.lookup(input);
+        Enchantment enchantment = ENCHANTMENTS.get(normalize(input));
 
         if (enchantment != null) {
             return new EnchantmentDetails(enchantment, level);
         } else {
             throw new ParseException(Errors.Parsing.unknownEnchantmentType(input));
         }
+    }
+
+    private static void putAlias(String alias, Enchantment enchantment) {
+        ENCHANTMENTS.put(normalize(alias), enchantment);
+    }
+
+    private static String normalize(String input) {
+        return input.toLowerCase(Locale.ROOT)
+                .replace("minecraft:", "")
+                .replace(' ', '_')
+                .replace('-', '_');
     }
 
 

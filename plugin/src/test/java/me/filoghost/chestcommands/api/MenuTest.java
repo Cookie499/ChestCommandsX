@@ -6,20 +6,20 @@
 package me.filoghost.chestcommands.api;
 
 import me.filoghost.chestcommands.test.BukkitMocks;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class MenuTest {
 
     @Test
     void setIcon() {
         Menu menu = createMenu(1);
-        menu.setIcon(0, 0, StaticIcon.create(new ItemStack(Material.APPLE)));
+        menu.setIcon(0, 0, StaticIcon.create(createItemStack()));
 
         assertThat(menu.getIcon(0, 0)).isNotNull();
     }
@@ -27,7 +27,7 @@ class MenuTest {
     @Test
     void unsetIcon() {
         Menu menu = createMenu(1);
-        menu.setIcon(0, 0, StaticIcon.create(new ItemStack(Material.APPLE)));
+        menu.setIcon(0, 0, StaticIcon.create(createItemStack()));
         menu.setIcon(0, 0, null);
 
         assertThat(menu.getIcon(0, 0)).isNull();
@@ -39,7 +39,7 @@ class MenuTest {
 
         for (int row = 0; row < menu.getRows(); row++) {
             for (int column = 0; column < menu.getColumns(); column++) {
-                menu.setIcon(row, column, StaticIcon.create(new ItemStack(Material.APPLE)));
+                menu.setIcon(row, column, StaticIcon.create(createItemStack()));
             }
         }
     }
@@ -67,6 +67,10 @@ class MenuTest {
 
     private Menu createMenu(int rowCount) {
         return Menu.create(BukkitMocks.PLUGIN, "Test menu", rowCount);
+    }
+
+    private ItemStack createItemStack() {
+        return mock(ItemStack.class);
     }
 
 

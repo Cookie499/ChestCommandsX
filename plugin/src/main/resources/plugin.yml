@@ -1,9 +1,10 @@
 name: ChestCommands
 main: me.filoghost.chestcommands.ChestCommands
 version: ${pluginVersion}
-api-version: 1.13
+api-version: '1.21'
+folia-supported: true
 
-softdepend: [Vault, BarAPI, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI]
 
 commands:
    chestcommands:

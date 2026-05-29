@@ -7,17 +7,16 @@ package me.filoghost.chestcommands.attribute;
 
 import me.filoghost.chestcommands.icon.InternalConfigurableIcon;
 
-public class DurabilityAttribute implements IconAttribute {
+public class UnbreakableAttribute implements IconAttribute {
 
-    private final short durability;
+    private final boolean unbreakable;
 
-    public DurabilityAttribute(short durability, AttributeErrorHandler errorHandler) {
-        this.durability = durability;
+    public UnbreakableAttribute(boolean unbreakable, AttributeErrorHandler errorHandler) {
+        this.unbreakable = unbreakable;
     }
-    
+
     @Override
     public void apply(InternalConfigurableIcon icon) {
-        icon.setDamage(durability);
+        icon.setUnbreakable(unbreakable);
     }
-
 }

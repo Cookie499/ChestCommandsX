@@ -19,7 +19,8 @@ public class V4_0_LangUpgradeTask extends YamlUpgradeTask {
     public void computeYamlChanges(Config settingsConfig) {
         removeValue(settingsConfig, "open-menu");
         removeValue(settingsConfig, "open-menu-others");
-        replaceStringValue(settingsConfig, "no-required-item", "{datavalue}", "{durability}");
+        replaceStringValue(settingsConfig, "no-required-item", " &c(durability: {datavalue})", "");
+        replaceStringValue(settingsConfig, "no-required-item", " &c(durability: {durability})", "");
     }
 
 }

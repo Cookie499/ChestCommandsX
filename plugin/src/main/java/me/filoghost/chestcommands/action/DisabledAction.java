@@ -5,6 +5,7 @@
  */
 package me.filoghost.chestcommands.action;
 
+import me.filoghost.chestcommands.util.Text;
 import org.bukkit.entity.Player;
 
 public class DisabledAction implements Action {
@@ -17,7 +18,7 @@ public class DisabledAction implements Action {
 
     @Override
     public void execute(Player player) {
-        player.sendMessage(errorMessage);
+        Text.send(player, errorMessage);
     }
 
 }

@@ -7,6 +7,7 @@ package me.filoghost.chestcommands.icon.requirement;
 
 import com.google.common.base.Preconditions;
 import me.filoghost.chestcommands.config.Lang;
+import me.filoghost.chestcommands.util.Text;
 import org.bukkit.entity.Player;
 
 public class RequiredExpLevel implements Requirement {
@@ -21,7 +22,7 @@ public class RequiredExpLevel implements Requirement {
     @Override
     public boolean hasCost(Player player) {
         if (player.getLevel() < levels) {
-            player.sendMessage(Lang.get().no_exp.replace("{levels}", Integer.toString(levels)));
+            Text.send(player, Lang.get().no_exp.replace("{levels}", Integer.toString(levels)));
             return false;
         }
 

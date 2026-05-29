@@ -47,6 +47,7 @@ public class ActionParser {
         GIVE_ITEM("give", GiveItemAction::new),
         GIVE_MONEY("give-money", GiveMoneyAction::new),
         SOUND("sound", PlaySoundAction::new),
+        BOSS_BAR_MODERN("boss-bar", DragonBarAction::new),
         BOSS_BAR("dragon-bar", DragonBarAction::new);
 
 

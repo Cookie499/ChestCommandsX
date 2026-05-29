@@ -5,6 +5,7 @@
  */
 package me.filoghost.chestcommands.action;
 
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,7 +20,8 @@ public class ConsoleCommandAction implements Action {
 
     @Override
     public void execute(Player player) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.getValue(player));
+        String parsedCommand = command.getValue(player);
+        FoliaScheduler.runGlobal(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), parsedCommand));
     }
 
 }

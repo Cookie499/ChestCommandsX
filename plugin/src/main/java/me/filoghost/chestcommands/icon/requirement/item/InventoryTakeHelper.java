@@ -6,9 +6,7 @@
 package me.filoghost.chestcommands.icon.requirement.item;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import me.filoghost.fcommons.MaterialsHelper;
 import me.filoghost.fcommons.Preconditions;
 import org.bukkit.inventory.ItemStack;
@@ -36,12 +34,7 @@ public class InventoryTakeHelper {
     public boolean prepareTakeItems(List<RequiredItem> requiredItems) {
         List<RequiredItem> missingItems = new ArrayList<>();
 
-        // Sort required items: check required items with a restrictive durability first
-        List<RequiredItem> sortedRequiredItems = requiredItems.stream()
-                .sorted(Comparator.comparing(RequiredItem::hasRestrictiveDurability).reversed())
-                .collect(Collectors.toList());
-
-        for (RequiredItem requiredItem : sortedRequiredItems) {
+        for (RequiredItem requiredItem : requiredItems) {
             int remainingRequiredAmount = requiredItem.getAmount();
 
             for (RemainingItem remainingItem : remainingItems) {

@@ -12,10 +12,13 @@ import me.filoghost.chestcommands.attribute.BannerColorAttribute;
 import me.filoghost.chestcommands.attribute.BannerPatternsAttribute;
 import me.filoghost.chestcommands.attribute.ClickPermissionAttribute;
 import me.filoghost.chestcommands.attribute.ClickPermissionMessageAttribute;
+import me.filoghost.chestcommands.attribute.CustomModelDataAttribute;
+import me.filoghost.chestcommands.attribute.DamageAttribute;
 import me.filoghost.chestcommands.attribute.DurabilityAttribute;
 import me.filoghost.chestcommands.attribute.EnchantmentsAttribute;
 import me.filoghost.chestcommands.attribute.ExpLevelsAttribute;
 import me.filoghost.chestcommands.attribute.IconAttribute;
+import me.filoghost.chestcommands.attribute.ItemFlagsAttribute;
 import me.filoghost.chestcommands.attribute.KeepOpenAttribute;
 import me.filoghost.chestcommands.attribute.LeatherColorAttribute;
 import me.filoghost.chestcommands.attribute.LoreAttribute;
@@ -26,6 +29,7 @@ import me.filoghost.chestcommands.attribute.PositionAttribute;
 import me.filoghost.chestcommands.attribute.PriceAttribute;
 import me.filoghost.chestcommands.attribute.RequiredItemsAttribute;
 import me.filoghost.chestcommands.attribute.SkullOwnerAttribute;
+import me.filoghost.chestcommands.attribute.UnbreakableAttribute;
 import me.filoghost.chestcommands.attribute.ViewPermissionAttribute;
 import me.filoghost.chestcommands.parsing.ParseException;
 import me.filoghost.fcommons.config.ConfigPath;
@@ -42,10 +46,14 @@ public enum AttributeType {
     POSITION_Y("POSITION-Y", ConfigType.INTEGER, PositionAttribute::new),
     MATERIAL("MATERIAL", ConfigType.STRING, MaterialAttribute::new),
     DURABILITY("DURABILITY", ConfigType.SHORT, DurabilityAttribute::new),
+    DAMAGE("DAMAGE", ConfigType.INTEGER, DamageAttribute::new),
     AMOUNT("AMOUNT", ConfigType.INTEGER, AmountAttribute::new),
     NAME("NAME", ConfigType.STRING, NameAttribute::new),
     LORE("LORE", ConfigType.STRING_LIST, LoreAttribute::new),
     NBT_DATA("NBT-DATA", ConfigType.STRING, NBTDataAttribute::new),
+    CUSTOM_MODEL_DATA("CUSTOM-MODEL-DATA", ConfigType.INTEGER, CustomModelDataAttribute::new),
+    UNBREAKABLE("UNBREAKABLE", ConfigType.BOOLEAN, UnbreakableAttribute::new),
+    ITEM_FLAGS("ITEM-FLAGS", ConfigType.STRING_LIST, ItemFlagsAttribute::new),
     LEATHER_COLOR("COLOR", ConfigType.STRING, LeatherColorAttribute::new),
     SKULL_OWNER("SKULL-OWNER", ConfigType.STRING, SkullOwnerAttribute::new),
     BANNER_COLOR("BANNER-COLOR", ConfigType.STRING, BannerColorAttribute::new),

@@ -5,18 +5,23 @@
  */
 package me.filoghost.chestcommands.action;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.parsing.NumberParser;
 import me.filoghost.chestcommands.parsing.ParseException;
 import me.filoghost.fcommons.Strings;
-import me.filoghost.fcommons.collection.EnumLookupRegistry;
 import me.filoghost.fcommons.collection.LookupRegistry;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class PlaySoundAction implements Action {
     
-    private static final LookupRegistry<Sound> SOUNDS_REGISTRY = EnumLookupRegistry.fromEnumValues(Sound.class);
+    private static final Registry<Sound> SOUNDS = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
+    private static final LookupRegistry<Sound> SOUNDS_REGISTRY = LookupRegistry.fromValues(SOUNDS, sound -> {
+        return SOUNDS.getKeyOrThrow(sound).getKey();
+    });
 
     private final Sound sound;
     private final float pitch;

@@ -9,6 +9,7 @@ import me.filoghost.chestcommands.inventory.DefaultMenuView;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
 import me.filoghost.chestcommands.placeholder.PlaceholderManager;
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -26,17 +27,21 @@ public class TickingTask implements Runnable {
 
     private void updateMenus() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            DefaultMenuView menuView = MenuManager.getOpenMenuView(player);
+            FoliaScheduler.runAtPlayer(player, () -> refreshMenuFor(player));
+        }
+    }
 
-            if (menuView == null || !(menuView.getMenu() instanceof InternalMenu)) {
-                continue;
-            }
+    private void refreshMenuFor(Player player) {
+        DefaultMenuView menuView = MenuManager.getOpenMenuView(player);
 
-            int refreshTicks = ((InternalMenu) menuView.getMenu()).getRefreshTicks();
+        if (menuView == null || !(menuView.getMenu() instanceof InternalMenu)) {
+            return;
+        }
 
-            if (refreshTicks > 0 && currentTick % refreshTicks == 0) {
-                menuView.refresh();
-            }
+        int refreshTicks = ((InternalMenu) menuView.getMenu()).getRefreshTicks();
+
+        if (refreshTicks > 0 && currentTick % refreshTicks == 0) {
+            menuView.refresh();
         }
     }
 

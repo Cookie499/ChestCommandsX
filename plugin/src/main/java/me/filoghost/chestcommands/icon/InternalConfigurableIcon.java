@@ -15,6 +15,7 @@ import me.filoghost.chestcommands.icon.requirement.RequiredMoney;
 import me.filoghost.chestcommands.icon.requirement.Requirement;
 import me.filoghost.chestcommands.icon.requirement.item.RequiredItem;
 import me.filoghost.chestcommands.icon.requirement.item.RequiredItems;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.Preconditions;
 import me.filoghost.fcommons.collection.CollectionUtils;
 import org.bukkit.Material;
@@ -129,9 +130,9 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
 
         if (!IconPermission.hasPermission(player, clickPermission)) {
             if (noClickPermissionMessage != null) {
-                player.sendMessage(noClickPermissionMessage);
+                Text.send(player, noClickPermissionMessage);
             } else {
-                player.sendMessage(Lang.get().default_no_icon_permission);
+                Text.send(player, Lang.get().default_no_icon_permission);
             }
             return clickResult;
         }
@@ -190,8 +191,12 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
         } else {
             // Internal icons are loaded and then never change, we can safely update only name and lore (for performance)
             ItemMeta meta = currentRendering.getItemMeta();
-            meta.setDisplayName(renderName(viewer));
-            meta.setLore(renderLore(viewer));
+            if (renderName(viewer) != null) {
+                meta.displayName(Text.component(renderName(viewer)));
+            }
+            if (renderLore(viewer) != null) {
+                meta.lore(Text.components(renderLore(viewer)));
+            }
             currentRendering.setItemMeta(meta);
             return currentRendering;
         }

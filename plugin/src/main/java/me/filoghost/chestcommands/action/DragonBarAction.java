@@ -5,13 +5,17 @@
  */
 package me.filoghost.chestcommands.action;
 
-import me.filoghost.chestcommands.hook.BarAPIHook;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.parsing.NumberParser;
 import me.filoghost.chestcommands.parsing.ParseException;
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.fcommons.Colors;
 import me.filoghost.fcommons.Strings;
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 public class DragonBarAction implements Action {
@@ -40,11 +44,14 @@ public class DragonBarAction implements Action {
 
     @Override
     public void execute(Player player) {
-        if (BarAPIHook.INSTANCE.isEnabled()) {
-            BarAPIHook.setMessage(player, message.getValue(player), seconds);
-        } else {
-            player.sendMessage(Errors.User.configurationError("BarAPI plugin not found"));
-        }
+        BossBar bossBar = Bukkit.createBossBar(message.getValue(player), BarColor.GREEN, BarStyle.SOLID);
+        bossBar.addPlayer(player);
+        bossBar.setVisible(true);
+
+        FoliaScheduler.runAtPlayerLater(player, () -> {
+            bossBar.removePlayer(player);
+            bossBar.setVisible(false);
+        }, seconds * 20L);
     }
 
 }

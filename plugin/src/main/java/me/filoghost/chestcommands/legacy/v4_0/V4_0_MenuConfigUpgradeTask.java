@@ -77,7 +77,8 @@ public class V4_0_MenuConfigUpgradeTask extends YamlUpgradeTask {
             String newAction = oldAction;
             newAction = replacePrefix(newAction, "menu:", "open:");
             newAction = replacePrefix(newAction, "givemoney:", "give-money:");
-            newAction = replacePrefix(newAction, "dragonbar:", "dragon-bar:");
+            newAction = replacePrefix(newAction, "dragonbar:", "boss-bar:");
+            newAction = replacePrefix(newAction, "dragon-bar:", "boss-bar:");
             newAction = replacePrefix(newAction, "server ", "server: ");
 
             if (!newAction.equals(oldAction)) {
@@ -120,11 +121,11 @@ public class V4_0_MenuConfigUpgradeTask extends YamlUpgradeTask {
 
         if (material.contains(":")) {
             String[] parts = Strings.splitAndTrim(material, ":", 2);
-            if (!section.contains(AttributeType.DURABILITY.getConfigKey())) {
+            if (!section.contains(AttributeType.DAMAGE.getConfigKey())) {
                 try {
-                    section.setInt(AttributeType.DURABILITY.getConfigKey(), Integer.parseInt(parts[1]));
+                    section.setInt(AttributeType.DAMAGE.getConfigKey(), Integer.parseInt(parts[1]));
                 } catch (NumberFormatException e) {
-                    section.setString(AttributeType.DURABILITY.getConfigKey(), parts[1]);
+                    section.setString(AttributeType.DAMAGE.getConfigKey(), parts[1]);
                 }
             }
             material = parts[0];

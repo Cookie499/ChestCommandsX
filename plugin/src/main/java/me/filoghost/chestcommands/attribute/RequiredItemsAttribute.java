@@ -24,9 +24,6 @@ public class RequiredItemsAttribute implements IconAttribute {
                 ItemStackParser itemReader = new ItemStackParser(serializedItem, true);
                 itemReader.checkNotAir();
                 RequiredItem requiredItem = new RequiredItem(itemReader.getMaterial(), itemReader.getAmount());
-                if (itemReader.hasExplicitDurability()) {
-                    requiredItem.setRestrictiveDurability(itemReader.getDurability());
-                }
                 requiredItems.add(requiredItem);
             } catch (ParseException e) {
                 errorHandler.onListElementError(serializedItem, e);

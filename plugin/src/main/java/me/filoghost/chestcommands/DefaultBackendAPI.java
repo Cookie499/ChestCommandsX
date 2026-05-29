@@ -16,6 +16,7 @@ import me.filoghost.chestcommands.menu.APIMenu;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
 import me.filoghost.chestcommands.placeholder.PlaceholderManager;
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.fcommons.Preconditions;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,7 +41,7 @@ public class DefaultBackendAPI extends BackendAPI {
         InternalMenu menu = MenuManager.getMenuByFileName(menuFileName);
 
         if (menu != null) {
-            menu.open(player);
+            FoliaScheduler.runAtPlayer(player, () -> menu.open(player));
             return true;
         } else {
             return false;

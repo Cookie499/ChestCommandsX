@@ -164,11 +164,6 @@ public class MenuParser {
                     ClickType clickType = ClickType.fromOptions(leftClick, rightClick);
 
                     MenuOpenItem openItem = new MenuOpenItem(itemReader.getMaterial(), clickType);
-
-                    if (itemReader.hasExplicitDurability()) {
-                        openItem.setRestrictiveDurability(itemReader.getDurability());
-                    }
-
                     menuSettings.setOpenItem(openItem);
 
                 } catch (ParseException e) {

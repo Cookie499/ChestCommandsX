@@ -13,9 +13,9 @@ import me.filoghost.chestcommands.inventory.DefaultMenuView;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
+import me.filoghost.chestcommands.util.FoliaScheduler;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.logging.Log;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -79,7 +79,7 @@ public class InventoryListener implements Listener {
         }
 
         // Only handle the click AFTER the event has finished
-        Bukkit.getScheduler().runTask(ChestCommands.getInstance(), () -> {
+        FoliaScheduler.runAtPlayer(clicker, () -> {
             try {
                 icon.onClick(menuView, clicker);
             } catch (Throwable t) {
@@ -98,7 +98,7 @@ public class InventoryListener implements Listener {
         }
 
         Log.severe("Encountered an exception while handling a click inside " + menuDescription, throwable);
-        clicker.sendMessage(ChatColor.RED + "An internal error occurred when you clicked on the item.");
+        Text.send(clicker, "&cAn internal error occurred when you clicked on the item.");
     }
 
 }

@@ -9,6 +9,8 @@ import me.filoghost.chestcommands.Permissions;
 import me.filoghost.chestcommands.config.Lang;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
+import me.filoghost.chestcommands.util.FoliaScheduler;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.chestcommands.util.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockState;
@@ -54,11 +56,11 @@ public class SignListener implements Listener {
         InternalMenu menu = MenuManager.getMenuByFileName(menuFileName);
         
         if (menu == null) {
-            event.getPlayer().sendMessage(Lang.get().menu_not_found);
+            Text.send(event.getPlayer(), Lang.get().menu_not_found);
             return;
         }
         
-        menu.openCheckingPermission(event.getPlayer());
+        FoliaScheduler.runAtPlayer(event.getPlayer(), () -> menu.openCheckingPermission(event.getPlayer()));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -70,7 +72,7 @@ public class SignListener implements Listener {
             
             if (menuFileName.isEmpty()) {
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.RED + "You must write a menu name in the second line.");
+                Text.send(player, "&cYou must write a menu name in the second line.");
                 return;
             }
             
@@ -79,12 +81,12 @@ public class SignListener implements Listener {
             InternalMenu menu = MenuManager.getMenuByFileName(menuFileName);
             if (menu == null) {
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.RED + "Menu \"" + menuFileName + "\" was not found.");
+                Text.send(player, "&cMenu \"" + menuFileName + "\" was not found.");
                 return;
             }
     
             event.setLine(HEADER_LINE, VALID_SIGN_COLOR + event.getLine(HEADER_LINE));
-            player.sendMessage(ChatColor.GREEN + "Successfully created a sign for the menu " + menuFileName + ".");
+            Text.send(player, "&aSuccessfully created a sign for the menu " + menuFileName + ".");
         }
     }
 

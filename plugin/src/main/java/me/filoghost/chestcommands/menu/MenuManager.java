@@ -10,6 +10,7 @@ import me.filoghost.chestcommands.inventory.MenuInventoryHolder;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.parsing.menu.LoadedMenu;
 import me.filoghost.chestcommands.parsing.menu.MenuOpenItem;
+import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.fcommons.collection.CaseInsensitiveHashMap;
 import me.filoghost.fcommons.collection.CaseInsensitiveMap;
 import me.filoghost.fcommons.collection.CaseInsensitiveString;
@@ -31,8 +32,10 @@ public class MenuManager {
     private static final CaseInsensitiveMap<InternalMenu> menusByFile = new CaseInsensitiveHashMap<>();
     private static final CaseInsensitiveMap<InternalMenu> menusByOpenCommand = new CaseInsensitiveHashMap<>();
     private static final Map<MenuOpenItem, InternalMenu> menusByOpenItem = new HashMap<>();
+    private static final MenuCommandRegistry menuCommandRegistry = new MenuCommandRegistry();
 
     public static void reset() {
+        menuCommandRegistry.unregisterAll();
         menusByFile.clear();
         menusByOpenCommand.clear();
         menusByOpenItem.clear();
@@ -54,12 +57,17 @@ public class MenuManager {
 
         if (loadedMenu.getOpenCommands() != null) {
             for (String openCommand : loadedMenu.getOpenCommands()) {
-                if (!openCommand.isEmpty()) {
-                    InternalMenu sameCommandMenu = menusByOpenCommand.get(openCommand);
+                String normalizedOpenCommand = MenuCommandRegistry.normalize(openCommand);
+                if (!normalizedOpenCommand.isEmpty()) {
+                    InternalMenu sameCommandMenu = menusByOpenCommand.get(normalizedOpenCommand);
                     if (sameCommandMenu != null) {
-                        errorCollector.add(Errors.Menu.duplicateMenuCommand(sameCommandMenu.getSourceFile(), loadedMenu.getSourceFile(), openCommand));
+                        errorCollector.add(Errors.Menu.duplicateMenuCommand(sameCommandMenu.getSourceFile(), loadedMenu.getSourceFile(), normalizedOpenCommand));
+                        continue;
                     }
-                    menusByOpenCommand.put(openCommand, menu);
+
+                    if (menuCommandRegistry.register(normalizedOpenCommand, menu, errorCollector)) {
+                        menusByOpenCommand.put(normalizedOpenCommand, menu);
+                    }
                 }
             }
         }
@@ -72,7 +80,7 @@ public class MenuManager {
     public static void openMenuByItem(Player player, ItemStack itemInHand, Action clickAction) {
         menusByOpenItem.forEach((openItem, menu) -> {
             if (openItem.matches(itemInHand, clickAction)) {
-                menu.openCheckingPermission(player);
+                FoliaScheduler.runAtPlayer(player, () -> menu.openCheckingPermission(player));
             }
         });
     }
@@ -91,10 +99,14 @@ public class MenuManager {
 
     public static void closeAllOpenMenuViews() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            DefaultMenuView openMenuView = getOpenMenuView(player);
-            if (openMenuView != null) {
-                openMenuView.close();
-            }
+            FoliaScheduler.runAtPlayer(player, () -> closeOpenMenuView(player));
+        }
+    }
+
+    private static void closeOpenMenuView(Player player) {
+        DefaultMenuView openMenuView = getOpenMenuView(player);
+        if (openMenuView != null) {
+            openMenuView.close();
         }
     }
 
