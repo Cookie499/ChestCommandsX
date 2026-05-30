@@ -7,9 +7,12 @@ package me.filoghost.chestcommands.inventory;
 
 import me.filoghost.chestcommands.api.Icon;
 import me.filoghost.chestcommands.api.MenuView;
+import me.filoghost.chestcommands.icon.InternalConfigurableIcon;
 import me.filoghost.chestcommands.icon.RefreshableIcon;
 import me.filoghost.chestcommands.menu.BaseMenu;
+import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
+import me.filoghost.chestcommands.placeholder.PlaceholderManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -30,18 +33,24 @@ public class DefaultMenuView implements MenuView {
 
     @Override
     public void refresh() {
-        for (int i = 0; i < menu.getIcons().getSize(); i++) {
-            Icon icon = menu.getIcons().getByIndex(i);
-
-            if (icon == null) {
-                bukkitInventory.setByIndex(i, null);
-            } else if (icon instanceof RefreshableIcon) {
-                ItemStack newItemStack = ((RefreshableIcon) icon).updateRendering(viewer, bukkitInventory.getByIndex(i));
-                bukkitInventory.setByIndex(i, newItemStack);
-            } else {
-                bukkitInventory.setByIndex(i, icon.render(viewer));
+        PlaceholderManager.withPrivateIntegerScope(this, () -> {
+            if (menu instanceof InternalMenu) {
+                ((InternalMenu) menu).rebuildConfiguredIcons();
             }
-        }
+
+            for (int i = 0; i < menu.getIcons().getSize(); i++) {
+                Icon icon = menu.getIcons().getByIndex(i);
+
+                if (icon == null) {
+                    bukkitInventory.setByIndex(i, null);
+                } else if (icon instanceof RefreshableIcon) {
+                    ItemStack newItemStack = ((RefreshableIcon) icon).updateRendering(viewer, bukkitInventory.getByIndex(i));
+                    bukkitInventory.setByIndex(i, newItemStack);
+                } else {
+                    bukkitInventory.setByIndex(i, icon.render(viewer));
+                }
+            }
+        });
     }
 
     @Override
@@ -49,6 +58,11 @@ public class DefaultMenuView implements MenuView {
         if (viewer.isOnline() && MenuManager.getOpenMenuView(viewer) == this) {
             viewer.closeInventory();
         }
+        clearPrivateState();
+    }
+
+    public void clearPrivateState() {
+        PlaceholderManager.clearPrivateIntegerScope(this);
     }
 
     public void open() {
@@ -61,6 +75,25 @@ public class DefaultMenuView implements MenuView {
         }
 
         return menu.getIcons().getByIndex(slot);
+    }
+
+    public @Nullable ItemStack getItem(int slot) {
+        if (slot < 0 || slot >= bukkitInventory.getSize()) {
+            return null;
+        }
+
+        return bukkitInventory.getByIndex(slot);
+    }
+
+    public boolean hasDraggableIcons() {
+        for (int i = 0; i < menu.getIcons().getSize(); i++) {
+            Icon icon = menu.getIcons().getByIndex(i);
+            if (icon instanceof InternalConfigurableIcon && ((InternalConfigurableIcon) icon).isDraggable()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

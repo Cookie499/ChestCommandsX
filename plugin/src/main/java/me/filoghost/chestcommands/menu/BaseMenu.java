@@ -84,4 +84,8 @@ public abstract class BaseMenu implements Menu {
         return icons;
     }
 
+    protected void clearIcons() {
+        icons.clear();
+    }
+
 }

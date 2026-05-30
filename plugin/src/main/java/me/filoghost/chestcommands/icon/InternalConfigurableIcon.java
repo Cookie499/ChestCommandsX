@@ -15,6 +15,7 @@ import me.filoghost.chestcommands.icon.requirement.RequiredMoney;
 import me.filoghost.chestcommands.icon.requirement.Requirement;
 import me.filoghost.chestcommands.icon.requirement.item.RequiredItem;
 import me.filoghost.chestcommands.icon.requirement.item.RequiredItems;
+import me.filoghost.chestcommands.placeholder.PlaceholderManager;
 import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.Preconditions;
 import me.filoghost.fcommons.collection.CollectionUtils;
@@ -39,6 +40,7 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
 
     private ImmutableList<Action> clickActions;
     private ClickResult clickResult;
+    private boolean draggable;
 
     public InternalConfigurableIcon(Material material) {
         super(material);
@@ -93,6 +95,14 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
     public void setClickActions(List<Action> clickActions) {
         this.clickActions = CollectionUtils.newImmutableList(clickActions);
     }
+
+    public boolean isDraggable() {
+        return draggable;
+    }
+
+    public void setDraggable(boolean draggable) {
+        this.draggable = draggable;
+    }
     
     
     @Override
@@ -117,13 +127,30 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
 
     @Override
     public void onClick(@NotNull MenuView menuView, @NotNull Player player) {
-        ClickResult clickResult = onClickGetResult(menuView, player);
-        if (clickResult == ClickResult.CLOSE) {
-            menuView.close();
-        }
+        PlaceholderManager.withPrivateIntegerScope(menuView, () -> {
+            ClickResult clickResult = onClickGetResult(menuView, player, true);
+            if (draggable && clickResult == ClickResult.CLOSE) {
+                clickResult = ClickResult.KEEP_OPEN;
+            }
+            if (clickResult == ClickResult.CLOSE) {
+                menuView.close();
+            }
+        });
     }
 
-    private ClickResult onClickGetResult(@NotNull MenuView menuView, @NotNull Player player) {
+    public void onClick(@NotNull MenuView menuView, @NotNull Player player, boolean refreshAfterActions) {
+        PlaceholderManager.withPrivateIntegerScope(menuView, () -> {
+            ClickResult clickResult = onClickGetResult(menuView, player, refreshAfterActions);
+            if (draggable && clickResult == ClickResult.CLOSE) {
+                clickResult = ClickResult.KEEP_OPEN;
+            }
+            if (clickResult == ClickResult.CLOSE) {
+                menuView.close();
+            }
+        });
+    }
+
+    private ClickResult onClickGetResult(@NotNull MenuView menuView, @NotNull Player player, boolean refreshAfterActions) {
         if (!IconPermission.hasPermission(player, viewPermission)) {
             return ClickResult.KEEP_OPEN;
         }
@@ -163,7 +190,9 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
         }
 
         // Update the menu after taking requirement costs and executing all actions
-        menuView.refresh();
+        if (refreshAfterActions) {
+            menuView.refresh();
+        }
 
         // Force menu to stay open if actions open another menu
         if (hasOpenMenuAction) {

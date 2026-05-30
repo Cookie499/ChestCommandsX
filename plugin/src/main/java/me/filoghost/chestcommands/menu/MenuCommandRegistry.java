@@ -11,10 +11,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 final class MenuCommandRegistry {
@@ -24,6 +30,7 @@ final class MenuCommandRegistry {
 
     private final CommandMap commandMap = Bukkit.getCommandMap();
     private final Map<String, Command> registeredCommands = new HashMap<>();
+    private final Map<String, Set<String>> fullCommandsByRoot = new HashMap<>();
 
     void unregisterAll() {
         Map<String, Command> knownCommands = commandMap.getKnownCommands();
@@ -39,42 +46,55 @@ final class MenuCommandRegistry {
         }
 
         registeredCommands.clear();
+        fullCommandsByRoot.clear();
         syncCommands();
     }
 
     boolean register(String rawCommand, InternalMenu menu, ErrorCollector errorCollector) {
-        String commandName = normalize(rawCommand);
-        if (commandName.isEmpty()) {
+        String fullCommand = normalize(rawCommand);
+        if (fullCommand.isEmpty()) {
             return false;
         }
 
-        if (!VALID_COMMAND.matcher(commandName).matches()) {
+        List<String> commandParts = split(fullCommand);
+        if (commandParts.isEmpty()) {
+            return false;
+        }
+
+        for (String commandPart : commandParts) {
+            if (!VALID_COMMAND.matcher(commandPart).matches()) {
+                errorCollector.add("invalid menu command \"" + rawCommand + "\" in \"" + menu.getSourceFile()
+                        + "\": use only letters, numbers, underscores, hyphens, and spaces between sub-commands");
+                return false;
+            }
+        }
+
+        String rootCommand = commandParts.get(0);
+
+        if (fullCommandsByRoot.getOrDefault(rootCommand, Collections.emptySet()).contains(fullCommand)) {
+            return false;
+        }
+
+        if (!registeredCommands.containsKey(rootCommand) && commandMap.getKnownCommands().get(rootCommand) != null) {
             errorCollector.add("invalid menu command \"" + rawCommand + "\" in \"" + menu.getSourceFile()
-                    + "\": use only letters, numbers, underscores, and hyphens");
+                    + "\": root command \"/" + rootCommand + "\" conflicts with an already registered command");
             return false;
         }
 
-        if (registeredCommands.containsKey(commandName)) {
-            return false;
+        if (!registeredCommands.containsKey(rootCommand)) {
+            MenuCommand command = new MenuCommand(rootCommand);
+            boolean registered = commandMap.register(rootCommand, FALLBACK_PREFIX, command);
+            if (!registered || commandMap.getKnownCommands().get(rootCommand) != command) {
+                errorCollector.add("menu command \"/" + rootCommand + "\" in \"" + menu.getSourceFile()
+                        + "\" could not be registered");
+                return false;
+            }
+
+            registeredCommands.put(rootCommand, command);
+            syncCommands();
         }
 
-        Command existingCommand = commandMap.getKnownCommands().get(commandName);
-        if (existingCommand != null) {
-            errorCollector.add("menu command \"/" + commandName + "\" in \"" + menu.getSourceFile()
-                    + "\" conflicts with an already registered command");
-            return false;
-        }
-
-        MenuCommand command = new MenuCommand(commandName, menu);
-        boolean registered = commandMap.register(commandName, FALLBACK_PREFIX, command);
-        if (!registered || commandMap.getKnownCommands().get(commandName) != command) {
-            errorCollector.add("menu command \"/" + commandName + "\" in \"" + menu.getSourceFile()
-                    + "\" could not be registered");
-            return false;
-        }
-
-        registeredCommands.put(commandName, command);
-        syncCommands();
+        fullCommandsByRoot.computeIfAbsent(rootCommand, ignored -> new HashSet<>()).add(fullCommand);
         return true;
     }
 
@@ -88,12 +108,20 @@ final class MenuCommandRegistry {
             commandName = commandName.substring(1);
         }
 
-        int firstSpace = commandName.indexOf(' ');
-        if (firstSpace >= 0) {
-            commandName = commandName.substring(0, firstSpace);
+        return String.join(" ", split(commandName)).toLowerCase(Locale.ROOT);
+    }
+
+    static List<String> split(String command) {
+        if (command == null) {
+            return Collections.emptyList();
         }
 
-        return commandName.toLowerCase(Locale.ROOT);
+        String trimmedCommand = command.trim();
+        if (trimmedCommand.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return new ArrayList<>(Arrays.asList(trimmedCommand.split("\\s+")));
     }
 
     private static void syncCommands() {

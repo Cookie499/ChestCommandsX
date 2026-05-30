@@ -16,6 +16,10 @@ import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class PlaySoundAction implements Action {
     
     private static final Registry<Sound> SOUNDS = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
@@ -30,7 +34,7 @@ public class PlaySoundAction implements Action {
     public PlaySoundAction(String serializedAction) throws ParseException {
         String[] split = Strings.splitAndTrim(serializedAction, ",", 3);
 
-        sound = SOUNDS_REGISTRY.lookup(split[0]);
+        sound = SOUNDS_REGISTRY.lookup(normalizeSoundName(split[0]));
         if (sound == null) {
             throw new ParseException(Errors.Parsing.unknownSound(split[0]));
         }
@@ -59,6 +63,34 @@ public class PlaySoundAction implements Action {
     @Override
     public void execute(Player player) {
         player.playSound(player.getLocation(), sound, volume, pitch);
+    }
+
+    public static List<String> getSoundNamesStartingWith(String prefix) {
+        String normalizedPrefix = normalizeSoundName(prefix);
+        List<String> soundNames = new ArrayList<>();
+
+        for (Sound sound : SOUNDS) {
+            String soundName = SOUNDS.getKeyOrThrow(sound).getKey();
+            if (soundName.startsWith(normalizedPrefix)) {
+                soundNames.add(soundName);
+            }
+        }
+
+        Collections.sort(soundNames);
+        return soundNames;
+    }
+
+    private static String normalizeSoundName(String soundName) {
+        if (soundName == null) {
+            return "";
+        }
+
+        String normalizedSoundName = soundName.trim().toLowerCase();
+        if (normalizedSoundName.startsWith("minecraft:")) {
+            return normalizedSoundName.substring("minecraft:".length());
+        }
+
+        return normalizedSoundName;
     }
 
 }

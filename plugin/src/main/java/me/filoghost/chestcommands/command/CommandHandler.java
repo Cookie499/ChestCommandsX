@@ -7,8 +7,10 @@ package me.filoghost.chestcommands.command;
 
 import me.filoghost.chestcommands.ChestCommands;
 import me.filoghost.chestcommands.Permissions;
+import me.filoghost.chestcommands.action.PlaySoundAction;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.menu.MenuManager;
+import me.filoghost.chestcommands.parsing.ParseException;
 import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.chestcommands.util.Text;
 import me.filoghost.chestcommands.util.Utils;
@@ -28,11 +30,18 @@ import me.filoghost.fcommons.command.validation.CommandValidate;
 import me.filoghost.fcommons.logging.ErrorCollector;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler extends AnnotatedSubCommandManager {
+import java.util.Collections;
+import java.util.List;
+
+public class CommandHandler extends AnnotatedSubCommandManager implements TabCompleter {
 
     public CommandHandler(String label) {
         setName(label);
@@ -162,6 +171,56 @@ public class CommandHandler extends AnnotatedSubCommandManager {
         }
 
         FoliaScheduler.runAtPlayer(target, () -> menu.open(target));
+    }
+
+    @Name("sound")
+    @Description("Plays a sound for testing.")
+    @Permission(Permissions.COMMAND_PREFIX + "sound")
+    @MinArgs(1)
+    @UsageArgs("<sound> [pitch] [volume]")
+    @DisplayPriority(0)
+    public void sound(CommandSender sender, String[] args) throws CommandException {
+        Player player = CommandValidate.getPlayerSender(sender);
+
+        String serializedSound = args[0];
+        if (args.length > 1) {
+            serializedSound += ", " + args[1];
+        }
+        if (args.length > 2) {
+            serializedSound += ", " + args[2];
+        }
+
+        PlaySoundAction action;
+        try {
+            action = new PlaySoundAction(serializedSound);
+        } catch (ParseException e) {
+            throw new CommandException(e.getMessage());
+        }
+
+        FoliaScheduler.runAtPlayer(player, () -> action.execute(player));
+        Text.send(sender, ChatColor.GREEN + "Played sound " + ChatColor.WHITE + args[0] + ChatColor.GREEN + ".");
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String alias,
+            @NotNull String[] args) {
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("sound") && sender.hasPermission(Permissions.COMMAND_PREFIX + "sound")) {
+            return PlaySoundAction.getSoundNamesStartingWith(args[1]);
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("sound") && sender.hasPermission(Permissions.COMMAND_PREFIX + "sound")) {
+            return List.of("1.0");
+        }
+
+        if (args.length == 4 && args[0].equalsIgnoreCase("sound") && sender.hasPermission(Permissions.COMMAND_PREFIX + "sound")) {
+            return List.of("1.0");
+        }
+
+        return Collections.emptyList();
     }
 
 }

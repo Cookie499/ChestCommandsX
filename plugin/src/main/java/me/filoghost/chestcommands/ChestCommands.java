@@ -47,7 +47,7 @@ import java.util.List;
 public class ChestCommands extends EnhancedJavaPlugin {
 
 
-    public static final String CHAT_PREFIX = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "ChestCommands" + ChatColor.DARK_GREEN + "] " + ChatColor.GREEN;
+    public static final String CHAT_PREFIX = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "ChestCommandsX" + ChatColor.DARK_GREEN + "] " + ChatColor.GREEN;
 
     private static Plugin pluginInstance;
     private static Path dataFolderPath;
@@ -108,7 +108,9 @@ public class ChestCommands extends EnhancedJavaPlugin {
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new SignListener(), this);
 
-        new CommandHandler("chestcommands").register(this);
+        CommandHandler commandHandler = new CommandHandler("chestcommands");
+        commandHandler.register(this);
+        getCommand("chestcommands").setTabCompleter(commandHandler);
 
         ErrorCollector errorCollector = load();
 

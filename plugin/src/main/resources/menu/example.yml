@@ -12,16 +12,19 @@ menu-settings:
 
   # REQUIRED
   # The number of rows in the menu.
-  rows: 3
+  rows: 4
 
   # OPTIONAL
   # Set which commands a player can execute to open the menu.
   # Commands are registered automatically, so they will not appear red in the client command bar.
   # They are also safe to open on Paper/Folia 1.21.x.
+  # Sub-commands are supported too, for example: shop 1
   # Do not include the leading slash.
   commands:
   - 'menu'
   - 'examplemenu'
+  - 'shop 1'
+  - 'shop 2'
 
   # OPTIONAL
   # How frequently the menu will be refreshed, in seconds.
@@ -271,6 +274,137 @@ boss-bar:
     - 'Shows a native Bukkit boss bar.'
   ACTIONS:
     - 'boss-bar: 3 | &dHello {player}!'
+
+
+dynamic-range-position:
+  MATERIAL: BLUE_STAINED_GLASS_PANE
+  POSITION-X: '%public_integer:range_x=1-2%'
+  POSITION-Y: 3
+  NAME: '&bPublic dynamic range position'
+  LORE:
+    - 'This icon uses POSITION-X: %public_integer:range_x=1-2%'
+    - 'Everyone sees the same public value.'
+  KEEP-OPEN: true
+
+
+range-reset:
+  MATERIAL: BARRIER
+  POSITION-X: 3
+  POSITION-Y: 3
+  NAME: '&cReset public range'
+  LORE:
+    - 'Resets the public range back to 1-2.'
+    - 'Current range: %public_integer:range_x=1-2%'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &cPublic range reset to %public_integer_reset:range_x=1-2%'
+
+
+range-left:
+  MATERIAL: ARROW
+  POSITION-X: 4
+  POSITION-Y: 4
+  NAME: '&eMove range left'
+  LORE:
+    - 'Moves the public range left.'
+    - 'Current range: %public_integer:range_x=1-2%'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &ePublic range X: %public_integer_minus:range_x=1-2%'
+
+
+range-right:
+  MATERIAL: ARROW
+  POSITION-X: 5
+  POSITION-Y: 4
+  NAME: '&eMove range right'
+  LORE:
+    - 'Moves the public range right.'
+    - 'Current range: %public_integer:range_x=1-2%'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &ePublic range X: %public_integer_plus:range_x=1-2%'
+
+
+empty-action-slot:
+  MATERIAL: AIR
+  POSITION-X: 6
+  POSITION-Y: 4
+  NAME: '&7Invisible action slot'
+  LORE:
+    - 'This slot is empty, but it still has actions.'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &7You clicked an invisible AIR icon.'
+
+
+drag-input-slot:
+  MATERIAL: AIR
+  POSITION-X: 7
+  POSITION-Y: 4
+  NAME: '&aDrag input slot'
+  LORE:
+    - 'Put an item here to test drag placeholders.'
+    - 'Item: %drag_item% x%drag_item_amount%'
+  DRAG: true
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &aDrag slot contains %drag_item% x%drag_item_amount%'
+
+
+dynamic-integer-icon:
+  MATERIAL: EMERALD
+  POSITION-X: '%private_integer:demo_x=2%'
+  POSITION-Y: 4
+  NAME: '&aPrivate dynamic integer icon'
+  LORE:
+    - 'POSITION-X: %private_integer:demo_x=2%'
+    - 'AMOUNT: %private_integer:demo_amount=1%'
+    - 'This resets when you close this menu.'
+  AMOUNT: '%private_integer:demo_amount=1%'
+  KEEP-OPEN: true
+
+
+integer-reset:
+  MATERIAL: BARRIER
+  POSITION-X: 3
+  POSITION-Y: 4
+  NAME: '&cPrivate integer reset'
+  LORE:
+    - 'Resets the emerald position and amount.'
+    - 'X: %private_integer:demo_x=2%'
+    - 'Amount: %private_integer:demo_amount=1%'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &cPrivate X: %private_integer_reset:demo_x=2%, amount: %private_integer_reset:demo_amount=1%'
+
+
+integer-minus:
+  MATERIAL: RED_DYE
+  POSITION-X: 8
+  POSITION-Y: 4
+  NAME: '&cInteger minus'
+  LORE:
+    - 'Moves the emerald left and lowers amount.'
+    - 'X: %private_integer:demo_x=2%'
+    - 'Amount: %private_integer:demo_amount=1%'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &cPrivate X: %private_integer_minus:demo_x=2%, amount: %private_integer_minus:demo_amount=1%'
+
+
+integer-plus:
+  MATERIAL: LIME_DYE
+  POSITION-X: 9
+  POSITION-Y: 4
+  NAME: '&aInteger plus'
+  LORE:
+    - 'Moves the emerald right and raises amount.'
+    - 'X: %private_integer:demo_x=2%'
+    - 'Amount: %private_integer:demo_amount=1%'
+  KEEP-OPEN: true
+  ACTIONS:
+    - 'tell: &aPrivate X: %private_integer_plus:demo_x=2%, amount: %private_integer_plus:demo_amount=1%'
 
 
 close-without-actions:

@@ -7,7 +7,6 @@ package me.filoghost.chestcommands.parsing.menu;
 
 import me.filoghost.chestcommands.action.Action;
 import me.filoghost.chestcommands.action.DisabledAction;
-import me.filoghost.chestcommands.attribute.PositionAttribute;
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.menu.InternalMenu;
 import me.filoghost.chestcommands.parsing.ActionParser;
@@ -38,9 +37,9 @@ public class MenuParser {
 
         InternalMenu menu = new InternalMenu(menuSettings.getTitle(), menuSettings.getRows(), menuConfig.getSourceFile());
 
-        for (IconSettings iconSettings : iconSettingsList) {
-            tryAddIconToMenu(menu, iconSettings, errorCollector);
-        }
+        validateRequiredIconAttributes(iconSettingsList, errorCollector);
+        menu.setIconSettingsList(iconSettingsList);
+        menu.rebuildConfiguredIcons(errorCollector);
 
         menu.setRefreshTicks(menuSettings.getRefreshTicks());
         menu.setOpenActions(menuSettings.getOpenActions());
@@ -49,51 +48,18 @@ public class MenuParser {
     }
 
 
-    private static void tryAddIconToMenu(InternalMenu menu, IconSettings iconSettings, ErrorCollector errorCollector) {
-        if (iconSettings.isMissingAttribute(AttributeType.POSITION_X)) {
-            errorCollector.add(Errors.Menu.missingAttribute(iconSettings, AttributeType.POSITION_X));
+    private static void validateRequiredIconAttributes(List<IconSettings> iconSettingsList, ErrorCollector errorCollector) {
+        for (IconSettings iconSettings : iconSettingsList) {
+            if (iconSettings.isMissingAttribute(AttributeType.POSITION_X)) {
+                errorCollector.add(Errors.Menu.missingAttribute(iconSettings, AttributeType.POSITION_X));
+            }
+            if (iconSettings.isMissingAttribute(AttributeType.POSITION_Y)) {
+                errorCollector.add(Errors.Menu.missingAttribute(iconSettings, AttributeType.POSITION_Y));
+            }
+            if (iconSettings.isMissingAttribute(AttributeType.MATERIAL)) {
+                errorCollector.add(Errors.Menu.missingAttribute(iconSettings, AttributeType.MATERIAL));
+            }
         }
-        if (iconSettings.isMissingAttribute(AttributeType.POSITION_Y)) {
-            errorCollector.add(Errors.Menu.missingAttribute(iconSettings, AttributeType.POSITION_Y));
-        }
-        if (iconSettings.isMissingAttribute(AttributeType.MATERIAL)) {
-            errorCollector.add(Errors.Menu.missingAttribute(iconSettings, AttributeType.MATERIAL));
-        }
-
-        PositionAttribute positionX = (PositionAttribute) iconSettings.getAttributeValue(AttributeType.POSITION_X);
-        PositionAttribute positionY = (PositionAttribute) iconSettings.getAttributeValue(AttributeType.POSITION_Y);
-
-        if (positionX == null || positionY == null) {
-            return;
-        }
-
-        int row = positionY.getPosition() - 1;
-        int column = positionX.getPosition() - 1;
-
-        boolean invalidPosition = false;
-
-        if (row < 0 || row >= menu.getRows()) {
-            errorCollector.add(
-                    Errors.Menu.invalidAttribute(iconSettings, AttributeType.POSITION_Y),
-                    "it must be between 1 and " + menu.getRows());
-            invalidPosition = true;
-        }
-        if (column < 0 || column >= menu.getColumns()) {
-            errorCollector.add(
-                    Errors.Menu.invalidAttribute(iconSettings, AttributeType.POSITION_X),
-                    "it must be between 1 and " + menu.getColumns());
-            invalidPosition = true;
-        }
-
-        if (invalidPosition) {
-            return;
-        }
-
-        if (menu.getIcon(row, column) != null) {
-            errorCollector.add(Errors.Menu.iconOverridesAnother(iconSettings));
-        }
-
-        menu.setIcon(row, column, iconSettings.createIcon());
     }
 
 

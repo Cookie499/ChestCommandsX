@@ -54,6 +54,12 @@ public abstract class Grid<T> {
         setByIndex0(ordinalIndex, element);
     }
 
+    public final void clear() {
+        for (int i = 0; i < getSize(); i++) {
+            setByIndex0(i, null);
+        }
+    }
+
 
     protected abstract void setByIndex0(int ordinalIndex, @Nullable T element);
 

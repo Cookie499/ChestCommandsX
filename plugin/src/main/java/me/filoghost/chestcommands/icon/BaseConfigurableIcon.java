@@ -6,6 +6,9 @@
 package me.filoghost.chestcommands.icon;
 
 import me.filoghost.chestcommands.api.Icon;
+import me.filoghost.chestcommands.parsing.NumberParser;
+import me.filoghost.chestcommands.parsing.ParseException;
+import me.filoghost.chestcommands.placeholder.PlaceholderManager;
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
 import me.filoghost.chestcommands.placeholder.PlaceholderStringList;
 import me.filoghost.chestcommands.util.Text;
@@ -40,6 +43,7 @@ public abstract class BaseConfigurableIcon implements Icon {
 
     private Material material;
     private int amount;
+    private PlaceholderString amountExpression;
     private Integer damage;
 
     private PlaceholderString name;
@@ -62,6 +66,9 @@ public abstract class BaseConfigurableIcon implements Icon {
     }
 
     protected boolean shouldCacheRendering() {
+        if (amountExpression != null && amountExpression.hasDynamicPlaceholders()) {
+            return false;
+        }
         if (placeholdersEnabled && hasDynamicPlaceholders()) {
             return false;
         } else {
@@ -87,6 +94,12 @@ public abstract class BaseConfigurableIcon implements Icon {
     public void setAmount(int amount) {
         Preconditions.checkArgument(amount > 0, "amount must be greater than 0");
         this.amount = Math.min(amount, 127);
+        this.amountExpression = null;
+        cachedRendering = null;
+    }
+
+    public void setAmountExpression(@Nullable PlaceholderString amountExpression) {
+        this.amountExpression = amountExpression;
         cachedRendering = null;
     }
 
@@ -294,7 +307,7 @@ public abstract class BaseConfigurableIcon implements Icon {
             return cachedRendering;
         }
 
-        ItemStack itemStack = new ItemStack(material, amount);
+        ItemStack itemStack = new ItemStack(material, renderAmount(viewer));
 
         ItemMeta itemMeta = itemStack.getItemMeta();
 
@@ -351,6 +364,20 @@ public abstract class BaseConfigurableIcon implements Icon {
         }
 
         return itemStack;
+    }
+
+    private int renderAmount(Player viewer) {
+        if (amountExpression == null) {
+            return amount;
+        }
+
+        try {
+            String renderedExpression = PlaceholderManager.replaceDynamicPlaceholders(amountExpression.getOriginalValue(), viewer, 127);
+            int renderedAmount = NumberParser.getStrictlyPositiveInteger(renderedExpression);
+            return Math.min(renderedAmount, 127);
+        } catch (ParseException e) {
+            return amount;
+        }
     }
 
 }

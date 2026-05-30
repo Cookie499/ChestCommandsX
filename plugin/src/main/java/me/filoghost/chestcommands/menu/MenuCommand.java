@@ -10,17 +10,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 
 class MenuCommand extends Command {
 
-    private final InternalMenu menu;
-
-    MenuCommand(String label, InternalMenu menu) {
+    MenuCommand(String label) {
         super(label);
-        this.menu = menu;
         setDescription("Opens a ChestCommands menu.");
         setUsage("/" + label);
     }
@@ -33,12 +30,25 @@ class MenuCommand extends Command {
         }
 
         Player player = (Player) sender;
+        InternalMenu menu = getMenu(commandLabel, args);
+        if (menu == null) {
+            return false;
+        }
+
         FoliaScheduler.runAtPlayer(player, () -> menu.openCheckingPermission(player));
         return true;
     }
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
-        return Collections.emptyList();
+        return MenuManager.getOpenCommandSuggestions(alias, args);
+    }
+
+    private static @Nullable InternalMenu getMenu(String commandLabel, String[] args) {
+        if (args.length == 0) {
+            return MenuManager.getMenuByCommandLine(commandLabel);
+        }
+
+        return MenuManager.getMenuByCommandLine(commandLabel + " " + String.join(" ", args));
     }
 }

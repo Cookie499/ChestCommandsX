@@ -1,16 +1,21 @@
-name: ChestCommands
+name: ChestCommandsX
 main: me.filoghost.chestcommands.ChestCommands
 version: ${pluginVersion}
 api-version: '1.21'
 folia-supported: true
+authors: [filoghost, CadsMC]
+description: Fork of ChestCommands by CadsMC.
 
 softdepend: [Vault, PlaceholderAPI]
 
 commands:
    chestcommands:
-      description: Main command for ChestCommands.
+      description: Main command for ChestCommandsX.
       usage: /<command> (Startup error)
       aliases: [cc]
+   chestcommands.command.sound:
+     description: Allows testing sounds with /cc sound.
+     default: op
 
 permissions:
   chestcommands.economy.bypass:

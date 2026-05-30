@@ -14,6 +14,7 @@ import me.filoghost.chestcommands.attribute.ClickPermissionAttribute;
 import me.filoghost.chestcommands.attribute.ClickPermissionMessageAttribute;
 import me.filoghost.chestcommands.attribute.CustomModelDataAttribute;
 import me.filoghost.chestcommands.attribute.DamageAttribute;
+import me.filoghost.chestcommands.attribute.DragAttribute;
 import me.filoghost.chestcommands.attribute.DurabilityAttribute;
 import me.filoghost.chestcommands.attribute.EnchantmentsAttribute;
 import me.filoghost.chestcommands.attribute.ExpLevelsAttribute;
@@ -42,12 +43,12 @@ import java.util.Map;
 
 public enum AttributeType {
 
-    POSITION_X("POSITION-X", ConfigType.INTEGER, PositionAttribute::new),
-    POSITION_Y("POSITION-Y", ConfigType.INTEGER, PositionAttribute::new),
+    POSITION_X("POSITION-X", AttributeType::parsePosition),
+    POSITION_Y("POSITION-Y", AttributeType::parsePosition),
     MATERIAL("MATERIAL", ConfigType.STRING, MaterialAttribute::new),
     DURABILITY("DURABILITY", ConfigType.SHORT, DurabilityAttribute::new),
     DAMAGE("DAMAGE", ConfigType.INTEGER, DamageAttribute::new),
-    AMOUNT("AMOUNT", ConfigType.INTEGER, AmountAttribute::new),
+    AMOUNT("AMOUNT", AttributeType::parseAmount),
     NAME("NAME", ConfigType.STRING, NameAttribute::new),
     LORE("LORE", ConfigType.STRING_LIST, LoreAttribute::new),
     NBT_DATA("NBT-DATA", ConfigType.STRING, NBTDataAttribute::new),
@@ -64,6 +65,7 @@ public enum AttributeType {
     CLICK_PERMISSION_MESSAGE("PERMISSION-MESSAGE", ConfigType.STRING, ClickPermissionMessageAttribute::new),
     VIEW_PERMISSION("VIEW-PERMISSION", ConfigType.STRING, ViewPermissionAttribute::new),
     KEEP_OPEN("KEEP-OPEN", ConfigType.BOOLEAN, KeepOpenAttribute::new),
+    DRAG("DRAG", ConfigType.BOOLEAN, DragAttribute::new),
     ACTIONS("ACTIONS", ConfigType.STRING_LIST, ActionsAttribute::new),
     ENCHANTMENTS("ENCHANTMENTS", ConfigType.STRING_LIST, EnchantmentsAttribute::new),
     REQUIRED_ITEMS("REQUIRED-ITEMS", ConfigType.STRING_LIST, RequiredItemsAttribute::new);
@@ -78,6 +80,11 @@ public enum AttributeType {
 
     private final ConfigPath configKey;
     private final AttributeParser attributeParser;
+
+    AttributeType(String configKey, AttributeParser attributeParser) {
+        this.configKey = ConfigPath.literal(configKey);
+        this.attributeParser = attributeParser;
+    }
 
     <V> AttributeType(String configKey, ConfigType<V> configType, AttributeFactory<V, ?> attributeFactory) {
         this.configKey = ConfigPath.literal(configKey);
@@ -96,6 +103,24 @@ public enum AttributeType {
 
     public static AttributeType fromConfigKey(ConfigPath configKey) {
         return attributeTypeByConfigKey.get(configKey);
+    }
+
+    private static PositionAttribute parsePosition(ConfigValue configValue, AttributeErrorHandler errorHandler)
+            throws ParseException, ConfigValueException {
+        try {
+            return new PositionAttribute(configValue.asRequired(ConfigType.INTEGER), errorHandler);
+        } catch (ConfigValueException e) {
+            return new PositionAttribute(configValue.asRequired(ConfigType.STRING), errorHandler);
+        }
+    }
+
+    private static AmountAttribute parseAmount(ConfigValue configValue, AttributeErrorHandler errorHandler)
+            throws ParseException, ConfigValueException {
+        try {
+            return new AmountAttribute(configValue.asRequired(ConfigType.INTEGER), errorHandler);
+        } catch (ConfigValueException e) {
+            return new AmountAttribute(configValue.asRequired(ConfigType.STRING), errorHandler);
+        }
     }
 
 

@@ -1,7 +1,7 @@
-ChestCommands
+ChestCommandsX
 ===================
 
-Modernized for Paper/Folia 1.21.x and Java 21.
+Fork of ChestCommands by CadsMC, modernized for Paper/Folia 1.21.x and Java 21.
 
 API Javadoc for developers: https://ci.codemc.io/job/filoghost/job/ChestCommands/javadoc/index.html?me/filoghost/chestcommands/api/ChestCommandsAPI.html
 
@@ -16,7 +16,7 @@ API Javadoc for developers: https://ci.codemc.io/job/filoghost/job/ChestCommands
 gradle build
 ```
 
-The plugin jar is created at `plugin/build/libs/chestcommands-plugin-5.0.0.jar`.
+The plugin jar is created at `plugin/build/libs/chestcommands-plugin-5.1.1.jar`.
 
 ## Gradle
 ```groovy
@@ -27,17 +27,20 @@ repositories {
 
 ```groovy
 dependencies {
-    compileOnly "me.filoghost.chestcommands:chestcommands-api:5.0.0"
+    compileOnly "me.filoghost.chestcommands:chestcommands-api:5.1.1"
 }
 ```
 
 ## Configuration Notes
 - Use modern material names such as `DIAMOND_SWORD`, `WHITE_WOOL`, and `REDSTONE_LAMP`.
-- Commands under `menu-settings.commands` are dynamically registered. Use `menu`, not `/menu`, and avoid names already used by other plugins.
+- Commands under `menu-settings.commands` are dynamically registered. Use `menu`, not `/menu`, and avoid names already used by other plugins. Sub-commands such as `shop 1` are supported.
+- Use `/cc sound <sound> [pitch] [volume]` to test available Minecraft sounds in-game. The sound argument supports tab completion.
 - Folia is declared as supported. Player inventory/menu work is scheduled on the player entity scheduler, while global tasks use Folia's global scheduler. The legacy update checker and bStats scheduler hooks are disabled on Folia.
 - Use `DAMAGE` for item damage. Legacy material data values like `WOOL:14` are not supported.
 - `NBT-DATA` is no longer supported. Use supported metadata keys such as `COLOR`, `SKULL-OWNER`, `ENCHANTMENTS`, `CUSTOM-MODEL-DATA`, `UNBREAKABLE`, and `ITEM-FLAGS`.
 - `boss-bar:` uses the native Bukkit boss bar API. The old `dragon-bar:` prefix still works as an alias.
+- `POSITION-X` and `POSITION-Y` support ranges such as `3-4` and dynamic integer placeholders.
+- `MATERIAL: AIR` can be used for invisible clickable slots, and `DRAG: true` allows a slot to accept normal item movement.
 
 ## License
 Chest Commands is free software/open source, and is distributed under the [GPL 3.0 License](https://opensource.org/licenses/GPL-3.0). It contains third-party code, see the included THIRD-PARTY.txt file for the license information on third-party code.

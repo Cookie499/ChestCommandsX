@@ -24,8 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class MenuManager {
 
@@ -87,6 +90,51 @@ public class MenuManager {
 
     public static InternalMenu getMenuByOpenCommand(String openCommand) {
         return menusByOpenCommand.get(openCommand);
+    }
+
+    public static @Nullable InternalMenu getMenuByCommandLine(String commandLine) {
+        String normalizedCommand = MenuCommandRegistry.normalize(commandLine);
+        if (normalizedCommand.isEmpty()) {
+            return null;
+        }
+
+        InternalMenu exactMenu = menusByOpenCommand.get(normalizedCommand);
+        if (exactMenu != null) {
+            return exactMenu;
+        }
+
+        List<String> commandParts = MenuCommandRegistry.split(normalizedCommand);
+        if (commandParts.isEmpty()) {
+            return null;
+        }
+
+        // Preserve the old behavior where a root menu command accepts extra arguments.
+        return menusByOpenCommand.get(commandParts.get(0));
+    }
+
+    public static List<String> getOpenCommandSuggestions(String rootCommand, String[] args) {
+        String normalizedRootCommand = MenuCommandRegistry.normalize(rootCommand);
+        if (normalizedRootCommand.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        TreeSet<String> suggestions = new TreeSet<>();
+        String normalizedArgumentPrefix = String.join(" ", args).toLowerCase();
+
+        for (CaseInsensitiveString openCommand : menusByOpenCommand.keySet()) {
+            String normalizedOpenCommand = openCommand.toString().toLowerCase();
+            List<String> commandParts = MenuCommandRegistry.split(normalizedOpenCommand);
+            if (commandParts.size() <= args.length || !commandParts.get(0).equals(normalizedRootCommand)) {
+                continue;
+            }
+
+            String currentArgumentPrefix = String.join(" ", commandParts.subList(1, Math.min(commandParts.size(), args.length + 1)));
+            if (currentArgumentPrefix.startsWith(normalizedArgumentPrefix)) {
+                suggestions.add(commandParts.get(args.length));
+            }
+        }
+
+        return List.copyOf(suggestions);
     }
 
     public static Collection<CaseInsensitiveString> getMenuFileNames() {

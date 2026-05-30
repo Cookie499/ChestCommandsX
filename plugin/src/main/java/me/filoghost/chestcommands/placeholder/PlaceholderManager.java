@@ -9,9 +9,11 @@ import me.filoghost.chestcommands.api.PlaceholderReplacer;
 import me.filoghost.chestcommands.hook.PlaceholderAPIHook;
 import me.filoghost.chestcommands.placeholder.scanner.PlaceholderMatch;
 import me.filoghost.chestcommands.placeholder.scanner.PlaceholderScanner;
+import me.filoghost.fcommons.MaterialsHelper;
 import me.filoghost.fcommons.Preconditions;
 import me.filoghost.fcommons.logging.Log;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +25,7 @@ public class PlaceholderManager {
     private static final List<StaticPlaceholder> staticPlaceholders = new ArrayList<>();
     private static final PlaceholderRegistry dynamicPlaceholderRegistry = new PlaceholderRegistry();
     private static final PlaceholderCache placeholderCache = new PlaceholderCache();
+    private static final ThreadLocal<ItemStack> dragItemContext = new ThreadLocal<>();
     static {
         for (DefaultPlaceholder placeholder : DefaultPlaceholder.values()) {
             dynamicPlaceholderRegistry.registerInternalPlaceholder(placeholder.getIdentifier(), placeholder.getReplacer());
@@ -39,6 +42,14 @@ public class PlaceholderManager {
     }
 
     public static boolean hasDynamicPlaceholders(String text) {
+        if (IntegerPlaceholderManager.hasPlaceholders(text)) {
+            return true;
+        }
+
+        if (hasDragItemPlaceholder(text)) {
+            return true;
+        }
+
         if (new PlaceholderScanner(text).containsAny()) {
             return true;
         }
@@ -51,6 +62,13 @@ public class PlaceholderManager {
     }
 
     public static String replaceDynamicPlaceholders(String text, Player player) {
+        return replaceDynamicPlaceholders(text, player, null);
+    }
+
+    public static String replaceDynamicPlaceholders(String text, Player player, Integer integerMaxValue) {
+        text = IntegerPlaceholderManager.replacePlaceholders(text, integerMaxValue);
+        text = replaceStaticPlaceholders(text);
+        text = replaceDragItemPercentPlaceholders(text);
         text = new PlaceholderScanner(text).replace(match -> getReplacement(match, player));
 
         if (PlaceholderAPIHook.INSTANCE.isEnabled()) {
@@ -61,6 +79,13 @@ public class PlaceholderManager {
     }
 
     private static @Nullable String getReplacement(PlaceholderMatch placeholderMatch, Player player) {
+        if ("drag_item".equalsIgnoreCase(placeholderMatch.getIdentifier())) {
+            return getDragItemMaterial();
+        }
+        if ("drag_item_amount".equalsIgnoreCase(placeholderMatch.getIdentifier())) {
+            return getDragItemAmount();
+        }
+
         Placeholder placeholder = dynamicPlaceholderRegistry.getPlaceholder(placeholderMatch);
 
         if (placeholder == null) {
@@ -108,6 +133,22 @@ public class PlaceholderManager {
         return text;
     }
 
+    public static String replaceIntegerPlaceholders(String text) {
+        return IntegerPlaceholderManager.replacePlaceholders(text);
+    }
+
+    public static String replaceIntegerPlaceholders(String text, int maxValue) {
+        return IntegerPlaceholderManager.replacePlaceholders(text, maxValue);
+    }
+
+    public static void withPrivateIntegerScope(Object scope, Runnable runnable) {
+        IntegerPlaceholderManager.withPrivateScope(scope, runnable);
+    }
+
+    public static void clearPrivateIntegerScope(Object scope) {
+        IntegerPlaceholderManager.clearPrivateScope(scope);
+    }
+
     public static void registerPluginPlaceholder(Plugin plugin, String identifier, PlaceholderReplacer placeholderReplacer) {
         Preconditions.notNull(plugin, "plugin");
         checkIdentifierArgument(identifier);
@@ -131,6 +172,51 @@ public class PlaceholderManager {
 
     public static void onTick() {
         placeholderCache.onTick();
+    }
+
+    public static void withDragItemContext(@Nullable ItemStack itemStack, Runnable runnable) {
+        ItemStack previousItemStack = dragItemContext.get();
+        dragItemContext.set(itemStack != null ? itemStack.clone() : null);
+        try {
+            runnable.run();
+        } finally {
+            if (previousItemStack != null) {
+                dragItemContext.set(previousItemStack);
+            } else {
+                dragItemContext.remove();
+            }
+        }
+    }
+
+    private static boolean hasDragItemPlaceholder(String text) {
+        return text.contains("%drag_item%")
+                || text.contains("%drag_item_amount%")
+                || text.contains("{drag_item}")
+                || text.contains("{drag_item_amount}");
+    }
+
+    private static String replaceDragItemPercentPlaceholders(String text) {
+        return text
+                .replace("%drag_item%", getDragItemMaterial())
+                .replace("%drag_item_amount%", getDragItemAmount());
+    }
+
+    private static String getDragItemMaterial() {
+        ItemStack itemStack = dragItemContext.get();
+        if (itemStack == null || MaterialsHelper.isAir(itemStack.getType())) {
+            return "";
+        }
+
+        return itemStack.getType().name();
+    }
+
+    private static String getDragItemAmount() {
+        ItemStack itemStack = dragItemContext.get();
+        if (itemStack == null || MaterialsHelper.isAir(itemStack.getType())) {
+            return "0";
+        }
+
+        return String.valueOf(itemStack.getAmount());
     }
 
 }

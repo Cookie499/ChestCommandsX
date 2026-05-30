@@ -18,12 +18,12 @@ public class CommandListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        String command = getCommandName(event.getMessage());
+        String command = getCommandLine(event.getMessage());
         if (command == null) {
             return;
         }
 
-        InternalMenu menu = MenuManager.getMenuByOpenCommand(command);
+        InternalMenu menu = MenuManager.getMenuByCommandLine(command);
         if (menu == null) {
             return;
         }
@@ -32,17 +32,12 @@ public class CommandListener implements Listener {
         FoliaScheduler.runAtPlayer(event.getPlayer(), () -> menu.openCheckingPermission(event.getPlayer()));
     }
     
-    private static @Nullable String getCommandName(String fullCommand) {
+    private static @Nullable String getCommandLine(String fullCommand) {
         if (!fullCommand.startsWith("/")) {
             return null;
         }
-        
-        int firstSpace = fullCommand.indexOf(' ');
-        if (firstSpace >= 1) {
-            return fullCommand.substring(1, firstSpace);
-        } else {
-            return fullCommand.substring(1);
-        }
+
+        return fullCommand.substring(1);
     }
 
 }
