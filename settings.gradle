@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "chestcommands-parent"
 
-include("api", "plugin")
+include("api", "kotlin", "plugin")

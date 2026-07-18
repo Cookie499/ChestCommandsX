@@ -1,9 +1,10 @@
 plugins {
     id "com.gradleup.shadow" version "9.4.1" apply false
+    id "org.jetbrains.kotlin.jvm" version "2.2.21" apply false
 }
 
 allprojects {
-    group = "me.filoghost.chestcommands"
+    group = "net.astrorbits.plugin"
     version = "6.0.1"
 }
 
@@ -44,6 +45,29 @@ project(":api") {
     dependencies {
         compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
         compileOnly "me.filoghost.fcommons:fcommons:1.2.7"
+    }
+}
+
+project(":kotlin") {
+    apply plugin: "org.jetbrains.kotlin.jvm"
+
+    base {
+        archivesName = "chestcommands-kotlin"
+    }
+
+    dependencies {
+        api project(":api")
+        compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+        testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
+        testImplementation "org.assertj:assertj-core:3.17.0"
+        testImplementation "org.mockito:mockito-core:3.5.13"
+    }
+
+    kotlin {
+        jvmToolchain(21)
+        explicitApi()
     }
 }
 

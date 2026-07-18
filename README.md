@@ -31,6 +31,34 @@ dependencies {
 }
 ```
 
+## Kotlin DSL
+
+Kotlin plugins can use the optional `chestcommands-kotlin` artifact:
+
+```kotlin
+dependencies {
+    compileOnly("net.astrorbits.plugin:chestcommands-kotlin:6.0.1")
+}
+```
+
+```kotlin
+val shop = plugin.menu(Component.text("Shop"), rows = 3) {
+    icon(row = 1, column = 4, material = Material.DIAMOND) {
+        name = "<aqua>Diamond"
+        lore("<gray>Click to buy")
+        amount = 3
+        placeholders = true
+        onClick { view, player ->
+            player.sendMessage(Component.text("Purchased!"))
+            view.refresh()
+        }
+    }
+}
+```
+
+Rows, columns, and linear slots are zero-based, like the Java API. The DSL artifact
+is separate from the plugin jar, so server owners do not need the Kotlin runtime.
+
 ## Configuration Notes
 - Use modern material names such as `DIAMOND_SWORD`, `WHITE_WOOL`, and `REDSTONE_LAMP`.
 - Commands under `menu-settings.commands` are dynamically registered. Use `menu`, not `/menu`, and avoid names already used by other plugins. Sub-commands such as `shop 1` are supported.
