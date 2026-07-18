@@ -1,7 +1,7 @@
-ChestCommandsX
+ChestCommandsXL
 ===================
 
-Fork of ChestCommands by CadsMC, modernized for Paper/Folia 1.21.x and Java 21.
+Fork of ChestCommandsX, modernized for 1.21+ minimessage and Components.
 
 API Javadoc for developers: https://ci.codemc.io/job/filoghost/job/ChestCommands/javadoc/index.html?me/filoghost/chestcommands/api/ChestCommandsAPI.html
 
@@ -16,18 +16,18 @@ API Javadoc for developers: https://ci.codemc.io/job/filoghost/job/ChestCommands
 gradle build
 ```
 
-The plugin jar is created at `plugin/build/libs/chestcommands-plugin-5.1.1.jar`.
+The plugin jar is created at `plugin/build/libs/chestcommands-plugin-6.0.1.jar`.
 
 ## Gradle
 ```groovy
 repositories {
-    maven { url = uri("https://repo.codemc.io/repository/maven-public/") }
+    maven { url = uri('https://nmb-court-team.github.io/Maven/repository') }
 }
 ```
 
 ```groovy
 dependencies {
-    compileOnly "me.filoghost.chestcommands:chestcommands-api:5.1.1"
+    compileOnly 'net.astrorbits.plugin:chestcommands-api:6.0.0'
 }
 ```
 
