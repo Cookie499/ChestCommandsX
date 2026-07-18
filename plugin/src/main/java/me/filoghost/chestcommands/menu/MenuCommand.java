@@ -6,42 +6,43 @@
 package me.filoghost.chestcommands.menu;
 
 import me.filoghost.chestcommands.util.FoliaScheduler;
-import org.bukkit.command.Command;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 
-class MenuCommand extends Command {
+class MenuCommand implements BasicCommand {
+
+    private final String label;
 
     MenuCommand(String label) {
-        super(label);
-        setDescription("Opens a ChestCommands menu.");
-        setUsage("/" + label);
+        this.label = label;
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+    public void execute(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] args) {
+        CommandSender sender = commandSourceStack.getSender();
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be used by players.");
-            return true;
+            return;
         }
 
         Player player = (Player) sender;
-        InternalMenu menu = getMenu(commandLabel, args);
+        InternalMenu menu = getMenu(label, args);
         if (menu == null) {
-            return false;
+            return;
         }
 
         FoliaScheduler.runAtPlayer(player, () -> menu.openCheckingPermission(player));
-        return true;
     }
 
     @Override
-    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
-        return MenuManager.getOpenCommandSuggestions(alias, args);
+    public @NotNull Collection<String> suggest(@NotNull CommandSourceStack commandSourceStack, @NotNull String[] args) {
+        return MenuManager.getOpenCommandSuggestions(label, args);
     }
 
     private static @Nullable InternalMenu getMenu(String commandLabel, String[] args) {

@@ -21,6 +21,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -36,6 +37,10 @@ public class MenuManager {
     private static final CaseInsensitiveMap<InternalMenu> menusByOpenCommand = new CaseInsensitiveHashMap<>();
     private static final Map<MenuOpenItem, InternalMenu> menusByOpenItem = new HashMap<>();
     private static final MenuCommandRegistry menuCommandRegistry = new MenuCommandRegistry();
+
+    public static void registerCommandLifecycleHandler(Plugin plugin) {
+        menuCommandRegistry.registerLifecycleHandler(plugin);
+    }
 
     public static void reset() {
         menuCommandRegistry.unregisterAll();

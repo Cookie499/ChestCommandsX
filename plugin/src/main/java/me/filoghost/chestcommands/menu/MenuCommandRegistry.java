@@ -6,17 +6,15 @@
 package me.filoghost.chestcommands.menu;
 
 import me.filoghost.fcommons.logging.ErrorCollector;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,29 +23,28 @@ import java.util.regex.Pattern;
 
 final class MenuCommandRegistry {
 
-    private static final String FALLBACK_PREFIX = "chestcommands";
     private static final Pattern VALID_COMMAND = Pattern.compile("[a-z0-9_-]+");
 
-    private final CommandMap commandMap = Bukkit.getCommandMap();
-    private final Map<String, Command> registeredCommands = new HashMap<>();
+    private final Set<String> activeRootCommands = new HashSet<>();
+    private final Set<String> lifecycleRegisteredRoots = new HashSet<>();
     private final Map<String, Set<String>> fullCommandsByRoot = new HashMap<>();
+    private boolean lifecycleRegistrationCompleted;
+
+    void registerLifecycleHandler(Plugin plugin) {
+        plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            Commands commands = event.registrar();
+            lifecycleRegisteredRoots.clear();
+            for (String rootCommand : activeRootCommands) {
+                commands.register(rootCommand, "Opens a ChestCommands menu.", new MenuCommand(rootCommand));
+                lifecycleRegisteredRoots.add(rootCommand);
+            }
+            lifecycleRegistrationCompleted = true;
+        });
+    }
 
     void unregisterAll() {
-        Map<String, Command> knownCommands = commandMap.getKnownCommands();
-
-        for (Command command : registeredCommands.values()) {
-            command.unregister(commandMap);
-            Iterator<Map.Entry<String, Command>> iterator = knownCommands.entrySet().iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().getValue() == command) {
-                    iterator.remove();
-                }
-            }
-        }
-
-        registeredCommands.clear();
+        activeRootCommands.clear();
         fullCommandsByRoot.clear();
-        syncCommands();
     }
 
     boolean register(String rawCommand, InternalMenu menu, ErrorCollector errorCollector) {
@@ -75,25 +72,13 @@ final class MenuCommandRegistry {
             return false;
         }
 
-        if (!registeredCommands.containsKey(rootCommand) && commandMap.getKnownCommands().get(rootCommand) != null) {
-            errorCollector.add("invalid menu command \"" + rawCommand + "\" in \"" + menu.getSourceFile()
-                    + "\": root command \"/" + rootCommand + "\" conflicts with an already registered command");
+        if (lifecycleRegistrationCompleted && !lifecycleRegisteredRoots.contains(rootCommand)) {
+            errorCollector.add("menu command \"/" + rootCommand + "\" in \"" + menu.getSourceFile()
+                    + "\" requires a server restart because it introduces a new root command");
             return false;
         }
 
-        if (!registeredCommands.containsKey(rootCommand)) {
-            MenuCommand command = new MenuCommand(rootCommand);
-            boolean registered = commandMap.register(rootCommand, FALLBACK_PREFIX, command);
-            if (!registered || commandMap.getKnownCommands().get(rootCommand) != command) {
-                errorCollector.add("menu command \"/" + rootCommand + "\" in \"" + menu.getSourceFile()
-                        + "\" could not be registered");
-                return false;
-            }
-
-            registeredCommands.put(rootCommand, command);
-            syncCommands();
-        }
-
+        activeRootCommands.add(rootCommand);
         fullCommandsByRoot.computeIfAbsent(rootCommand, ignored -> new HashSet<>()).add(fullCommand);
         return true;
     }
@@ -124,12 +109,4 @@ final class MenuCommandRegistry {
         return new ArrayList<>(Arrays.asList(trimmedCommand.split("\\s+")));
     }
 
-    private static void syncCommands() {
-        try {
-            Method syncCommands = Bukkit.getServer().getClass().getMethod("syncCommands");
-            syncCommands.invoke(Bukkit.getServer());
-        } catch (ReflectiveOperationException ignored) {
-            // Available on CraftBukkit/Paper runtime, absent from the public API.
-        }
-    }
 }

@@ -87,6 +87,7 @@ public class ChestCommands extends EnhancedJavaPlugin {
         placeholders = new CustomPlaceholders();
 
         BackendAPI.setImplementation(new DefaultBackendAPI());
+        MenuManager.registerCommandLifecycleHandler(this);
 
         VaultEconomyHook.INSTANCE.setup();
         PlaceholderAPIHook.INSTANCE.setup();
