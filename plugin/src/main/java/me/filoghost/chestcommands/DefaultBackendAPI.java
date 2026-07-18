@@ -18,6 +18,7 @@ import me.filoghost.chestcommands.menu.MenuManager;
 import me.filoghost.chestcommands.placeholder.PlaceholderManager;
 import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.fcommons.Preconditions;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -54,7 +55,7 @@ public class DefaultBackendAPI extends BackendAPI {
     }
 
     @Override
-    public @NotNull Menu createMenu(@NotNull Plugin plugin, @NotNull String title, int rows) {
+    public @NotNull Menu createMenu(@NotNull Plugin plugin, @NotNull Component title, int rows) {
         return new APIMenu(plugin, title, rows);
     }
 

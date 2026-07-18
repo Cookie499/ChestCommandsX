@@ -6,7 +6,7 @@
 package me.filoghost.chestcommands.util;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
 
 public final class Text {
 
-    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     private Text() {}
 
-    public static Component component(@Nullable String text) {
-        if (text == null) {
+    public static Component parseMiniMessage(@Nullable String input) {
+        if (input == null) {
             return Component.empty();
         }
-        return LEGACY_SECTION.deserialize(text.replace('&', '§'));
+        return MINI_MESSAGE.deserialize(input);
     }
 
     public static List<Component> components(List<String> lines) {
-        return lines.stream().map(Text::component).collect(Collectors.toList());
+        return lines.stream().map(Text::parseMiniMessage).collect(Collectors.toList());
     }
 
     public static void send(CommandSender sender, String message) {
-        sender.sendMessage(component(message));
+        sender.sendMessage(parseMiniMessage(message));
     }
 }

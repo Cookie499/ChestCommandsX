@@ -10,12 +10,9 @@ import me.filoghost.chestcommands.parsing.NumberParser;
 import me.filoghost.chestcommands.parsing.ParseException;
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
 import me.filoghost.chestcommands.util.FoliaScheduler;
-import me.filoghost.fcommons.Colors;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.Strings;
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
+import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.entity.Player;
 
 public class DragonBarAction implements Action {
@@ -39,19 +36,19 @@ public class DragonBarAction implements Action {
             message = serialiazedAction;
         }
 
-        this.message = PlaceholderString.of(Colors.addColors(message));
+        this.message = PlaceholderString.of(message);
     }
 
     @Override
     public void execute(Player player) {
-        BossBar bossBar = Bukkit.createBossBar(message.getValue(player), BarColor.GREEN, BarStyle.SOLID);
-        bossBar.addPlayer(player);
-        bossBar.setVisible(true);
+        BossBar bossBar = BossBar.bossBar(
+                Text.parseMiniMessage(message.getValue(player)),
+                1.0f,
+                BossBar.Color.GREEN,
+                BossBar.Overlay.PROGRESS);
+        player.showBossBar(bossBar);
 
-        FoliaScheduler.runAtPlayerLater(player, () -> {
-            bossBar.removePlayer(player);
-            bossBar.setVisible(false);
-        }, seconds * 20L);
+        FoliaScheduler.runAtPlayerLater(player, () -> player.hideBossBar(bossBar), seconds * 20L);
     }
 
 }

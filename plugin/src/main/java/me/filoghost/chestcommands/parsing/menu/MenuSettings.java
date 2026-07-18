@@ -8,13 +8,14 @@ package me.filoghost.chestcommands.parsing.menu;
 import com.google.common.collect.ImmutableList;
 import me.filoghost.chestcommands.action.Action;
 import me.filoghost.fcommons.collection.CollectionUtils;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
 public class MenuSettings {
 
     // Required settings
-    private final String title;
+    private final Component title;
     private final int rows;
 
     // Optional settings
@@ -24,12 +25,12 @@ public class MenuSettings {
 
     private MenuOpenItem openItem;
 
-    public MenuSettings(String title, int rows) {
+    public MenuSettings(Component title, int rows) {
         this.title = title;
         this.rows = rows;
     }
 
-    public String getTitle() {
+    public Component getTitle() {
         return title;
     }
 

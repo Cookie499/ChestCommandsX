@@ -6,14 +6,13 @@
 package me.filoghost.chestcommands.attribute;
 
 import me.filoghost.chestcommands.icon.InternalConfigurableIcon;
-import me.filoghost.fcommons.Colors;
 
 public class ClickPermissionMessageAttribute implements IconAttribute {
 
     private final String message;
 
     public ClickPermissionMessageAttribute(String serializedMessage, AttributeErrorHandler errorHandler) {
-        this.message = Colors.addColors(serializedMessage);
+        this.message = serializedMessage;
     }
     
     @Override

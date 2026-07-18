@@ -7,7 +7,6 @@ package me.filoghost.chestcommands.attribute;
 
 import me.filoghost.chestcommands.config.Settings;
 import me.filoghost.chestcommands.icon.InternalConfigurableIcon;
-import me.filoghost.fcommons.Colors;
 
 public class NameAttribute implements IconAttribute {
 
@@ -19,7 +18,7 @@ public class NameAttribute implements IconAttribute {
 
     private String colorName(String name) {
         if (!name.isEmpty()) {
-            return Settings.get().default_color__name + Colors.addColors(name);
+            return Settings.get().default_color__name + name;
         } else {
             return name;
         }

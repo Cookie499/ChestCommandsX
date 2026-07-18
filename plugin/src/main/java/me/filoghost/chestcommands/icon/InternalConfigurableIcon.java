@@ -221,7 +221,7 @@ public class InternalConfigurableIcon extends BaseConfigurableIcon implements Re
             // Internal icons are loaded and then never change, we can safely update only name and lore (for performance)
             ItemMeta meta = currentRendering.getItemMeta();
             if (renderName(viewer) != null) {
-                meta.displayName(Text.component(renderName(viewer)));
+                meta.displayName(Text.parseMiniMessage(renderName(viewer)));
             }
             if (renderLore(viewer) != null) {
                 meta.lore(Text.components(renderLore(viewer)));

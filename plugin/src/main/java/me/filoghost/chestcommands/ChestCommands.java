@@ -35,7 +35,6 @@ import me.filoghost.fcommons.logging.Log;
 import me.filoghost.updatechecker.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
@@ -47,7 +46,7 @@ import java.util.List;
 public class ChestCommands extends EnhancedJavaPlugin {
 
 
-    public static final String CHAT_PREFIX = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + "ChestCommandsX" + ChatColor.DARK_GREEN + "] " + ChatColor.GREEN;
+    public static final String CHAT_PREFIX = "<dark_green>[<green>ChestCommandsX</dark_green>] <green>";
 
     private static Plugin pluginInstance;
     private static Path dataFolderPath;
@@ -118,7 +117,7 @@ public class ChestCommands extends EnhancedJavaPlugin {
             errorCollector.logToConsole();
             FoliaScheduler.runGlobalLater(() -> {
                 Text.send(Bukkit.getConsoleSender(),
-                        ChestCommands.CHAT_PREFIX + ChatColor.RED + "Encountered " + errorCollector.getErrorsCount() + " error(s) on load. "
+                        ChestCommands.CHAT_PREFIX + "<red>Encountered " + errorCollector.getErrorsCount() + " error(s) on load. "
                         + "Check previous console logs or run \"/chestcommands errors\" to see them again.");
             }, 10L);
         }

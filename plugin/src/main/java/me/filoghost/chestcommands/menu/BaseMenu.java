@@ -13,6 +13,7 @@ import me.filoghost.chestcommands.inventory.DefaultMenuView;
 import me.filoghost.chestcommands.inventory.Grid;
 import me.filoghost.chestcommands.util.FoliaScheduler;
 import me.filoghost.fcommons.Preconditions;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -21,11 +22,11 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseMenu implements Menu {
 
 
-    private final String title;
+    private final Component title;
     private final Grid<Icon> icons;
 
 
-    public BaseMenu(@NotNull String title, int rows) {
+    public BaseMenu(@NotNull Component title, int rows) {
         Preconditions.notNull(title, "title");
         Preconditions.checkArgument(rows > 0, "rows must be greater than 0");
         this.title = title;
@@ -76,7 +77,7 @@ public abstract class BaseMenu implements Menu {
     }
 
     @Override
-    public @NotNull String getTitle() {
+    public @NotNull Component getTitle() {
         return title;
     }
 

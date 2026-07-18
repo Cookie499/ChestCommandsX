@@ -7,7 +7,6 @@ package me.filoghost.chestcommands.action;
 
 import me.filoghost.chestcommands.placeholder.PlaceholderString;
 import me.filoghost.chestcommands.util.Text;
-import me.filoghost.fcommons.Colors;
 import org.bukkit.entity.Player;
 
 public class SendMessageAction implements Action {
@@ -15,7 +14,7 @@ public class SendMessageAction implements Action {
     private final PlaceholderString message;
 
     public SendMessageAction(String serializedAction) {
-        message = PlaceholderString.of(Colors.addColors(serializedAction));
+        message = PlaceholderString.of(serializedAction);
     }
 
     @Override

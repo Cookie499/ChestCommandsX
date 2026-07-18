@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The main entry point for the Chest Commands API.
  * <p>
- * To create a menu, start by looking at {@link Menu#create(Plugin, String, int)} and {@link
+ * To create a menu, start by looking at {@link Menu#create(Plugin, net.kyori.adventure.text.Component, int)} and {@link
  * ConfigurableIcon#create(Material)}.
  *
  * @since 1

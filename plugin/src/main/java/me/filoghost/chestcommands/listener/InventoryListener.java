@@ -208,7 +208,7 @@ public class InventoryListener implements Listener {
         }
 
         Log.severe("Encountered an exception while handling a click inside " + menuDescription, throwable);
-        Text.send(clicker, "&cAn internal error occurred when you clicked on the item.");
+        Text.send(clicker, "<red>An internal error occurred when you clicked on the item.");
     }
 
 }

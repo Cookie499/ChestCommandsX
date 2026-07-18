@@ -6,6 +6,7 @@
 package me.filoghost.chestcommands.api;
 
 import me.filoghost.chestcommands.test.BukkitMocks;
+import me.filoghost.chestcommands.util.Text;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,7 +67,7 @@ class MenuTest {
     }
 
     private Menu createMenu(int rowCount) {
-        return Menu.create(BukkitMocks.PLUGIN, "Test menu", rowCount);
+        return Menu.create(BukkitMocks.PLUGIN, Text.parseMiniMessage("Test menu"), rowCount);
     }
 
     private ItemStack createItemStack() {

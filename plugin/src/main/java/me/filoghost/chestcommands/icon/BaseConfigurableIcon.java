@@ -14,7 +14,6 @@ import me.filoghost.chestcommands.placeholder.PlaceholderStringList;
 import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.Preconditions;
 import me.filoghost.fcommons.collection.CollectionUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -282,7 +281,7 @@ public abstract class BaseConfigurableIcon implements Icon {
 
         if (name.isEmpty()) {
             // Add a color to display the name empty
-            return ChatColor.WHITE.toString();
+            return "<white>";
         } else {
             return name;
         }
@@ -313,7 +312,7 @@ public abstract class BaseConfigurableIcon implements Icon {
 
         if (itemMeta != null) {
             if (renderName(viewer) != null) {
-                itemMeta.displayName(Text.component(renderName(viewer)));
+                itemMeta.customName(Text.parseMiniMessage(renderName(viewer)));
             }
             if (renderLore(viewer) != null) {
                 itemMeta.lore(Text.components(renderLore(viewer)));

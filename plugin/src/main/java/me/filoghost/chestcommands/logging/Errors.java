@@ -10,7 +10,6 @@ import me.filoghost.chestcommands.parsing.icon.AttributeType;
 import me.filoghost.chestcommands.parsing.icon.IconSettings;
 import me.filoghost.fcommons.config.ConfigErrors;
 import me.filoghost.fcommons.config.ConfigPath;
-import org.bukkit.ChatColor;
 
 import java.nio.file.Path;
 
@@ -211,7 +210,7 @@ public class Errors {
         public static final String notifyStaffRequest = "Please inform the staff.";
 
         public static String configurationError(String errorMessage) {
-            return ChatColor.RED + "Error: " + errorMessage + ". " + Errors.User.notifyStaffRequest;
+            return "<red>Error: " + errorMessage + ". " + Errors.User.notifyStaffRequest;
         }
 
     }

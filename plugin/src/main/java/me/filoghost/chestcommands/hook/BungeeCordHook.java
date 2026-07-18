@@ -35,8 +35,8 @@ public enum BungeeCordHook implements PluginHook {
     public static void connect(Player player, String server) {
         INSTANCE.checkEnabledState();
 
-        if (server.length() == 0) {
-            Text.send(player, "&cTarget server was an empty string, cannot connect to it.");
+        if (server.isEmpty()) {
+            Text.send(player, "<red>Target server was an empty string, cannot connect to it.");
             return;
         }
 

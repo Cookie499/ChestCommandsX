@@ -9,7 +9,6 @@ import me.filoghost.chestcommands.ChestCommands;
 import me.filoghost.chestcommands.Permissions;
 import me.filoghost.chestcommands.config.Settings;
 import me.filoghost.chestcommands.util.Text;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,13 +22,13 @@ public class JoinListener implements Listener {
 
         if (ChestCommands.getLastLoadErrors().hasErrors() && player.hasPermission(Permissions.SEE_ERRORS)) {
             Text.send(player,
-                    ChestCommands.CHAT_PREFIX + ChatColor.RED + "The plugin found " + ChestCommands.getLastLoadErrors().getErrorsCount()
+                    ChestCommands.CHAT_PREFIX + "<red>The plugin found " + ChestCommands.getLastLoadErrors().getErrorsCount()
                     + " error(s) last time it was loaded. You can see them by doing \"/cc reload\" in the console.");
         }
 
         if (ChestCommands.hasNewVersion() && Settings.get().update_notifications && player.hasPermission(Permissions.UPDATE_NOTIFICATIONS)) {
             Text.send(player, ChestCommands.CHAT_PREFIX + "Found an update: " + ChestCommands.getNewVersion() + ". Download:");
-            Text.send(player, ChatColor.DARK_GREEN + ">> " + ChatColor.GREEN + "http://dev.bukkit.org/bukkit-plugins/chest-commands");
+            Text.send(player, "<dark_green>>> <green>https://dev.bukkit.org/projects/chest-commands");
         }
     }
 

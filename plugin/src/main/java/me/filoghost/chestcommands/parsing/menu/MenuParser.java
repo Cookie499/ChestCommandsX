@@ -14,7 +14,7 @@ import me.filoghost.chestcommands.parsing.ItemStackParser;
 import me.filoghost.chestcommands.parsing.ParseException;
 import me.filoghost.chestcommands.parsing.icon.AttributeType;
 import me.filoghost.chestcommands.parsing.icon.IconSettings;
-import me.filoghost.fcommons.Colors;
+import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.config.ConfigPath;
 import me.filoghost.fcommons.config.ConfigSection;
 import me.filoghost.fcommons.config.ConfigType;
@@ -22,7 +22,7 @@ import me.filoghost.fcommons.config.FileConfig;
 import me.filoghost.fcommons.config.exception.ConfigValueException;
 import me.filoghost.fcommons.config.exception.MissingConfigValueException;
 import me.filoghost.fcommons.logging.ErrorCollector;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,14 +70,11 @@ public class MenuParser {
             settingsSection = new ConfigSection();
         }
 
-        String title;
+        Component title;
         try {
-            title = Colors.addColors(settingsSection.getRequiredString(MenuSettingsPath.NAME));
-            if (title.length() > 32) {
-                title = title.substring(0, 32);
-            }
+            title = Text.parseMiniMessage(settingsSection.getRequiredString(MenuSettingsPath.NAME));
         } catch (ConfigValueException e) {
-            title = ChatColor.DARK_RED + "No name set";
+            title = Text.parseMiniMessage("<red>No name set</red>");
             addMenuSettingError(errorCollector, config, MenuSettingsPath.NAME, e);
         }
 

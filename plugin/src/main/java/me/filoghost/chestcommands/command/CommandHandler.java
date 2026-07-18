@@ -29,7 +29,6 @@ import me.filoghost.fcommons.command.validation.CommandException;
 import me.filoghost.fcommons.command.validation.CommandValidate;
 import me.filoghost.fcommons.logging.ErrorCollector;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -56,14 +55,14 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
     protected void sendNoArgsMessage(CommandContext context) {
         CommandSender sender = context.getSender();
         Text.send(sender, ChestCommands.CHAT_PREFIX);
-        Text.send(sender, ChatColor.GREEN + "Version: " + ChatColor.GRAY + ChestCommands.getInstance().getDescription().getVersion());
-        Text.send(sender, ChatColor.GREEN + "Developer: " + ChatColor.GRAY + "filoghost");
-        Text.send(sender, ChatColor.GREEN + "Commands: " + ChatColor.GRAY + "/" + context.getRootLabel() + " help");
+        Text.send(sender, "<green>Version: <gray>" + ChestCommands.getInstance().getPluginMeta().getVersion());
+        Text.send(sender, "<green>Developer: <gray>" + "filoghost");
+        Text.send(sender, "<green>Commands: <gray>" + "/" + context.getRootLabel() + " help");
     }
     
     @Override
     protected void sendUnknownSubCommandMessage(SubCommandContext context) {
-        Text.send(context.getSender(), ChatColor.RED + "Unknown sub-command \"" + context.getSubLabel() + "\". "
+        Text.send(context.getSender(), "<red>Unknown sub-command \"" + context.getSubLabel() + "\". "
                 + "Use \"/" + context.getRootLabel() + " help\" to see available commands.");
     }
 
@@ -76,7 +75,7 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
                 continue;
             }
             String usageText = getUsageText(context, subCommand);
-            Text.send(sender, ChatColor.WHITE + usageText + ChatColor.GRAY + " - " + subCommand.getDescription());
+            Text.send(sender, "<white>" + usageText + "<gray> - " + subCommand.getDescription());
         }
     }
 
@@ -93,9 +92,9 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
             Text.send(sender, ChestCommands.CHAT_PREFIX + "Plugin reloaded.");
         } else {
             errorCollector.logToConsole();
-            Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Plugin reloaded with " + errorCollector.getErrorsCount() + " error(s).");
+            Text.send(sender, ChestCommands.CHAT_PREFIX + "<red>Plugin reloaded with " + errorCollector.getErrorsCount() + " error(s).");
             if (!(sender instanceof ConsoleCommandSender)) {
-                Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Please check the console.");
+                Text.send(sender, ChestCommands.CHAT_PREFIX + "<red>Please check the console.");
             }
         }
     }
@@ -109,13 +108,13 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
 
         if (errorCollector.hasErrors()) {
             errorCollector.logToConsole();
-            Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Last time the plugin loaded, "
+            Text.send(sender, ChestCommands.CHAT_PREFIX + "<red>Last time the plugin loaded, "
                     + errorCollector.getErrorsCount() + " error(s) were found.");
             if (!(sender instanceof ConsoleCommandSender)) {
-                Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.RED + "Errors were printed on the console.");
+                Text.send(sender, ChestCommands.CHAT_PREFIX + "<red>Errors were printed on the console.");
             }
         } else {
-            Text.send(sender, ChestCommands.CHAT_PREFIX + ChatColor.GREEN + "Last plugin load was successful, no errors logged.");
+            Text.send(sender, ChestCommands.CHAT_PREFIX + "<green>Last plugin load was successful, no errors logged.");
         }
     }
 
@@ -126,7 +125,7 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
     public void list(CommandSender sender) {
         Text.send(sender, ChestCommands.CHAT_PREFIX + "Loaded menus:");
         for (CaseInsensitiveString name : MenuManager.getMenuFileNames()) {
-            Text.send(sender, ChatColor.GRAY + "- " + ChatColor.WHITE + name);
+            Text.send(sender, "<gray>- <white>" + name);
         }
     }
 
@@ -136,7 +135,6 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
     @MinArgs(1)
     @UsageArgs("<menu> [player]")
     @DisplayPriority(1)
-    @SuppressWarnings("deprecation")
     public void open(CommandSender sender, String[] args) throws CommandException {
         Player target;
 
@@ -165,9 +163,9 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
         }
 
         if (sender.getName().equalsIgnoreCase(target.getName())) {
-            Text.send(sender, ChatColor.GREEN + "Opening the menu " + menuName + ".");
+            Text.send(sender, "<green>Opening the menu " + menuName + ".");
         } else {
-            Text.send(sender, ChatColor.GREEN + "Opening the menu " + menuName + " to " + target.getName() + ".");
+            Text.send(sender, "<green>Opening the menu " + menuName + " to " + target.getName() + ".");
         }
 
         FoliaScheduler.runAtPlayer(target, () -> menu.open(target));
@@ -198,7 +196,7 @@ public class CommandHandler extends AnnotatedSubCommandManager implements TabCom
         }
 
         FoliaScheduler.runAtPlayer(player, () -> action.execute(player));
-        Text.send(sender, ChatColor.GREEN + "Played sound " + ChatColor.WHITE + args[0] + ChatColor.GREEN + ".");
+        Text.send(sender, "<green>Played sound <white>" + args[0] + "</white>.");
     }
 
     @Override

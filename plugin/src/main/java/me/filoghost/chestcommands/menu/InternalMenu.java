@@ -18,6 +18,7 @@ import me.filoghost.chestcommands.parsing.icon.IconSettings;
 import me.filoghost.chestcommands.util.Text;
 import me.filoghost.fcommons.collection.CollectionUtils;
 import me.filoghost.fcommons.logging.ErrorCollector;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -35,7 +36,7 @@ public class InternalMenu extends BaseMenu {
     private ImmutableList<IconSettings> iconSettingsList;
     private int refreshTicks;
 
-    public InternalMenu(@NotNull String title, int rows, @NotNull Path sourceFile) {
+    public InternalMenu(@NotNull Component title, int rows, @NotNull Path sourceFile) {
         super(title, rows);
         this.sourceFile = sourceFile;
         this.openPermission = Permissions.OPEN_MENU_PREFIX + sourceFile.getFileName();

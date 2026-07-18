@@ -9,6 +9,6 @@
 #
 placeholders:
   '{custom_placeholder}': 'This line is a custom placeholder.'
-  '{primary_color}': '&b'
-  '{secondary_color}': '&7'
-  '{separator}': '&8[====|====|====|====|====|====|====|====]'
+  '{primary_color}': '<aqua>'
+  '{secondary_color}': '<gray>'
+  '{separator}': '<dark_gray>[====|====|====|====|====|====|====|====]'

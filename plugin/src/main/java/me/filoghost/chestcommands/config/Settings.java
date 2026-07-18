@@ -6,16 +6,14 @@
 package me.filoghost.chestcommands.config;
 
 import me.filoghost.fcommons.config.mapped.MappedConfig;
-import me.filoghost.fcommons.config.mapped.modifier.ChatColors;
 
 import java.util.Arrays;
 import java.util.List;
 
-@ChatColors
 public class Settings implements MappedConfig {
 
-    public String default_color__name = "&f";
-    public String default_color__lore = "&7";
+    public String default_color__name = "<white>";
+    public String default_color__lore = "<gray>";
     public int anti_click_spam_delay = 200;
     public boolean update_notifications = true;
     

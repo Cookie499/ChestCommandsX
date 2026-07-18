@@ -6,6 +6,7 @@
 package me.filoghost.chestcommands.api;
 
 import me.filoghost.chestcommands.api.internal.BackendAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * Menus are containers of {@link Icon}s that can be displayed to players as unmodifiable inventories, organized as a
  * grid with a number of rows and columns.
  * <p>
- * This interface should not be implemented, use the provided constructor {@link Menu#create(Plugin, String, int)}. Any
+ * This interface should not be implemented, use the provided constructor {@link Menu#create(Plugin, Component, int)}. Any
  * custom implementation will not be handled by Chest Commands' event listener, which relies on internal details. New
  * methods may also be added, making existing custom implementations incompatible.
  *
@@ -34,7 +35,7 @@ public interface Menu {
      * @return the created menu
      * @since 1
      */
-    static @NotNull Menu create(@NotNull Plugin plugin, @NotNull String title, int rows) {
+    static @NotNull Menu create(@NotNull Plugin plugin, @NotNull Component title, int rows) {
         return BackendAPI.getImplementation().createMenu(plugin, title, rows);
     }
 
@@ -109,7 +110,7 @@ public interface Menu {
      * @return the title
      * @since 1
      */
-    @NotNull String getTitle();
+    @NotNull Component getTitle();
 
     /**
      * Returns the plugin that created the menu.

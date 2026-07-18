@@ -7,7 +7,6 @@ package me.filoghost.chestcommands.config;
 
 import me.filoghost.chestcommands.logging.Errors;
 import me.filoghost.chestcommands.placeholder.StaticPlaceholder;
-import me.filoghost.fcommons.Colors;
 import me.filoghost.fcommons.config.ConfigPath;
 import me.filoghost.fcommons.config.ConfigSection;
 import me.filoghost.fcommons.config.ConfigType;
@@ -32,7 +31,7 @@ public class CustomPlaceholders {
 
         for (Entry<ConfigPath, String> entry : placeholdersSection.toMap(ConfigType.STRING).entrySet()) {
             String placeholder = entry.getKey().asRawKey();
-            String replacement = Colors.addColors(entry.getValue());
+            String replacement = entry.getValue();
             
             if (placeholder == null || placeholder.length() == 0) {
                 errorCollector.add(Errors.Config.emptyPlaceholder(config.getSourceFile()));

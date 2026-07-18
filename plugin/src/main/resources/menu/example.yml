@@ -8,7 +8,7 @@ menu-settings:
 
   # REQUIRED
   # Appears as the title of the menu.
-  name: '&1Example menu'
+  name: '<dark_blue>Example menu'
 
   # REQUIRED
   # The number of rows in the menu.
@@ -35,7 +35,7 @@ menu-settings:
   # These actions will be executed when the menu is opened.
   # Supports all the icon action types.
   open-actions:
-  - 'tell: &eYou opened the example menu.'
+  - 'tell: <yellow>You opened the example menu.'
   - 'sound: ui.button.click'
 
   # OPTIONAL
@@ -57,7 +57,7 @@ spawn-command:
   MATERIAL: ENDER_PEARL
   POSITION-X: 1
   POSITION-Y: 1
-  NAME: '&e/spawn'
+  NAME: '<yellow>/spawn'
   LORE:
     - 'Makes the player run the /spawn command.'
   ACTIONS:
@@ -68,7 +68,7 @@ damaged-armor:
   MATERIAL: DIAMOND_HELMET
   POSITION-X: 2
   POSITION-Y: 1
-  NAME: '&aDamaged armor'
+  NAME: '<green>Damaged armor'
   LORE:
     - 'This armor uses modern 1.21 item damage.'
   DAMAGE: 200
@@ -80,7 +80,7 @@ enchanted-sword:
   MATERIAL: DIAMOND_SWORD
   POSITION-X: 3
   POSITION-Y: 1
-  NAME: '&aEnchanted sword'
+  NAME: '<green>Enchanted sword'
   LORE:
     - 'This sword has a glowing effect.'
   ENCHANTMENTS:
@@ -94,7 +94,7 @@ multiple-items:
   MATERIAL: ARROW
   POSITION-X: 4
   POSITION-Y: 1
-  NAME: '&aSome arrows'
+  NAME: '<green>Some arrows'
   LORE:
     - 'You can set the amount of items to display.'
   AMOUNT: 5
@@ -104,7 +104,7 @@ command-from-console:
   MATERIAL: COMMAND_BLOCK
   POSITION-X: 5
   POSITION-Y: 1
-  NAME: '&cRuns command from the console.'
+  NAME: '<red>Runs command from the console.'
   LORE:
     - 'It broadcasts your name with the command /say.'
   ACTIONS:
@@ -115,7 +115,7 @@ command-as-op:
   MATERIAL: COMMAND_BLOCK
   POSITION-X: 6
   POSITION-Y: 1
-  NAME: '&cRuns command as OP.'
+  NAME: '<red>Runs command as OP.'
   LORE:
     - 'Be careful with this type of commands.'
     - 'It will ignore nearly all the permission checks.'
@@ -127,22 +127,22 @@ placeholders:
   MATERIAL: WATER_BUCKET
   POSITION-X: 7
   POSITION-Y: 1
-  NAME: '&6Placeholders'
+  NAME: '<gold>Placeholders'
   LORE:
     - 'This icon''s actions contain placeholders'
     - 'that will be replaced when the icon is clicked.'
   ACTIONS:
-    - 'tell: &9Online players: &f{online}/{max_players}'
-    - 'tell: &9Your name: &f{player}'
-    - 'tell: &9The world you are in: &f{world}'
-    - 'tell: &9Money: &f{money}'
+    - 'tell: <blue>Online players: <white>{online}/{max_players}'
+    - 'tell: <blue>Your name: <white>{player}'
+    - 'tell: <blue>The world you are in: <white>{world}'
+    - 'tell: <blue>Money: <white>{money}'
 
 
 economy-give:
   MATERIAL: GOLD_INGOT
   POSITION-X: 8
   POSITION-Y: 1
-  NAME: '&eEconomy & Give action'
+  NAME: '<yellow>Economy & Give action'
   LORE:
     - 'This action will be executed'
     - 'only if you have at least 50$.'
@@ -151,7 +151,7 @@ economy-give:
     - 'Current money: {money}'
   PRICE: 50
   ACTIONS:
-    - 'tell: &aYou have paid 50$'
+    - 'tell: <green>You have paid 50$'
     - 'give: GOLD_INGOT'
   KEEP-OPEN: true
 
@@ -160,7 +160,7 @@ economy-take:
   MATERIAL: GOLD_INGOT
   POSITION-X: 9
   POSITION-Y: 1
-  NAME: '&eEconomy & Required item'
+  NAME: '<yellow>Economy & Required item'
   LORE:
     - 'This icon is the opposite of the previous.'
     - 'It will take you a gold ingot and give you $50.'
@@ -169,7 +169,7 @@ economy-take:
   REQUIRED-ITEMS:
     - GOLD_INGOT
   ACTIONS:
-    - 'tell: &aYou have been paid 50$'
+    - 'tell: <green>You have been paid 50$'
     - 'give-money: 50'
   KEEP-OPEN: true
 
@@ -178,20 +178,20 @@ formatting-codes:
   MATERIAL: PAPER
   POSITION-X: 1
   POSITION-Y: 2
-  NAME: '&dFormatting codes'
+  NAME: '<light_purple>Formatting codes'
   LORE:
-    - 'You can use legacy formatting codes.'
-    - 'Colors: &c#c &a#a &9#9 &e#e &f...'
-    - 'Bold (#l): &lexample'
-    - 'Underline (#n): &nexample'
-    - 'Italic (#o): &oexample'
+    - 'You can use minimessages formatting codes.'
+    - 'Colors: <red> <green> <blue> <yellow> <white>...'
+    - 'Bold: <bold>/<b>'
+    - 'Underline: <underline>/<u>'
+    - 'Italic: <italic>/<i>'
 
 
 will-not-close:
   MATERIAL: BOOK
   POSITION-X: 2
   POSITION-Y: 2
-  NAME: '&2Info'
+  NAME: '<dark_green>Info'
   LORE:
     - 'The menu will not close'
     - 'when clicking on this icon.'
@@ -202,7 +202,7 @@ chat-message:
   MATERIAL: TORCH
   POSITION-X: 3
   POSITION-Y: 2
-  NAME: '&3Chat message'
+  NAME: '<dark_aqua>Chat message'
   LORE:
     - 'Sends a chat message without commands.'
   ACTIONS:
@@ -213,21 +213,21 @@ permission:
   MATERIAL: IRON_BARS
   POSITION-X: 4
   POSITION-Y: 2
-  NAME: '&8Permission test'
+  NAME: '<dark_gray>Permission test'
   LORE:
     - 'To use this icon you need the'
     - 'permission "chestcommands.test".'
   PERMISSION: chestcommands.test
   PERMISSION-MESSAGE: 'You do not have the correct permission.'
   ACTIONS:
-    - 'tell: &aYou have the correct permission.'
+    - 'tell: <green>You have the correct permission.'
 
 
 custom-model:
   MATERIAL: LEATHER_CHESTPLATE
   POSITION-X: 5
   POSITION-Y: 2
-  NAME: '&aModern item meta'
+  NAME: '<green>Modern item meta'
   LORE:
     - 'This item uses supported 1.21 metadata.'
     - 'Custom model data works with resource packs.'
@@ -244,7 +244,7 @@ banner-pattern:
   MATERIAL: WHITE_BANNER
   POSITION-X: 6
   POSITION-Y: 2
-  NAME: '&fBanner patterns'
+  NAME: '<white>Banner patterns'
   LORE:
     - 'Uses the modern banner pattern registry.'
   BANNER-PATTERNS:
@@ -269,18 +269,18 @@ boss-bar:
   MATERIAL: DRAGON_BREATH
   POSITION-X: 8
   POSITION-Y: 2
-  NAME: '&5Boss bar'
+  NAME: '<dark_purple>Boss bar'
   LORE:
     - 'Shows a native Bukkit boss bar.'
   ACTIONS:
-    - 'boss-bar: 3 | &dHello {player}!'
+    - 'boss-bar: 3 | <light_purple>Hello {player}!'
 
 
 dynamic-range-position:
   MATERIAL: BLUE_STAINED_GLASS_PANE
   POSITION-X: '%public_integer:range_x=1-2%'
   POSITION-Y: 3
-  NAME: '&bPublic dynamic range position'
+  NAME: '<aqua>Public dynamic range position'
   LORE:
     - 'This icon uses POSITION-X: %public_integer:range_x=1-2%'
     - 'Everyone sees the same public value.'
@@ -291,72 +291,72 @@ range-reset:
   MATERIAL: BARRIER
   POSITION-X: 3
   POSITION-Y: 3
-  NAME: '&cReset public range'
+  NAME: '<red>Reset public range'
   LORE:
     - 'Resets the public range back to 1-2.'
     - 'Current range: %public_integer:range_x=1-2%'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &cPublic range reset to %public_integer_reset:range_x=1-2%'
+    - 'tell: <red>Public range reset to %public_integer_reset:range_x=1-2%'
 
 
 range-left:
   MATERIAL: ARROW
   POSITION-X: 4
   POSITION-Y: 4
-  NAME: '&eMove range left'
+  NAME: '<yellow>Move range left'
   LORE:
     - 'Moves the public range left.'
     - 'Current range: %public_integer:range_x=1-2%'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &ePublic range X: %public_integer_minus:range_x=1-2%'
+    - 'tell: <yellow>Public range X: %public_integer_minus:range_x=1-2%'
 
 
 range-right:
   MATERIAL: ARROW
   POSITION-X: 5
   POSITION-Y: 4
-  NAME: '&eMove range right'
+  NAME: '<yellow>Move range right'
   LORE:
     - 'Moves the public range right.'
     - 'Current range: %public_integer:range_x=1-2%'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &ePublic range X: %public_integer_plus:range_x=1-2%'
+    - 'tell: <yellow>Public range X: %public_integer_plus:range_x=1-2%'
 
 
 empty-action-slot:
   MATERIAL: AIR
   POSITION-X: 6
   POSITION-Y: 4
-  NAME: '&7Invisible action slot'
+  NAME: '<gray>Invisible action slot'
   LORE:
     - 'This slot is empty, but it still has actions.'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &7You clicked an invisible AIR icon.'
+    - 'tell: <gray>You clicked an invisible AIR icon.'
 
 
 drag-input-slot:
   MATERIAL: AIR
   POSITION-X: 7
   POSITION-Y: 4
-  NAME: '&aDrag input slot'
+  NAME: '<green>Drag input slot'
   LORE:
     - 'Put an item here to test drag placeholders.'
     - 'Item: %drag_item% x%drag_item_amount%'
   DRAG: true
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &aDrag slot contains %drag_item% x%drag_item_amount%'
+    - 'tell: <green>Drag slot contains %drag_item% x%drag_item_amount%'
 
 
 dynamic-integer-icon:
   MATERIAL: EMERALD
   POSITION-X: '%private_integer:demo_x=2%'
   POSITION-Y: 4
-  NAME: '&aPrivate dynamic integer icon'
+  NAME: '<green>Private dynamic integer icon'
   LORE:
     - 'POSITION-X: %private_integer:demo_x=2%'
     - 'AMOUNT: %private_integer:demo_amount=1%'
@@ -369,49 +369,49 @@ integer-reset:
   MATERIAL: BARRIER
   POSITION-X: 3
   POSITION-Y: 4
-  NAME: '&cPrivate integer reset'
+  NAME: '<red>Private integer reset'
   LORE:
     - 'Resets the emerald position and amount.'
     - 'X: %private_integer:demo_x=2%'
     - 'Amount: %private_integer:demo_amount=1%'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &cPrivate X: %private_integer_reset:demo_x=2%, amount: %private_integer_reset:demo_amount=1%'
+    - 'tell: <red>Private X: %private_integer_reset:demo_x=2%, amount: %private_integer_reset:demo_amount=1%'
 
 
 integer-minus:
   MATERIAL: RED_DYE
   POSITION-X: 8
   POSITION-Y: 4
-  NAME: '&cInteger minus'
+  NAME: '<red>Integer minus'
   LORE:
     - 'Moves the emerald left and lowers amount.'
     - 'X: %private_integer:demo_x=2%'
     - 'Amount: %private_integer:demo_amount=1%'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &cPrivate X: %private_integer_minus:demo_x=2%, amount: %private_integer_minus:demo_amount=1%'
+    - 'tell: <red>Private X: %private_integer_minus:demo_x=2%, amount: %private_integer_minus:demo_amount=1%'
 
 
 integer-plus:
   MATERIAL: LIME_DYE
   POSITION-X: 9
   POSITION-Y: 4
-  NAME: '&aInteger plus'
+  NAME: '<green>Integer plus'
   LORE:
     - 'Moves the emerald right and raises amount.'
     - 'X: %private_integer:demo_x=2%'
     - 'Amount: %private_integer:demo_amount=1%'
   KEEP-OPEN: true
   ACTIONS:
-    - 'tell: &aPrivate X: %private_integer_plus:demo_x=2%, amount: %private_integer_plus:demo_amount=1%'
+    - 'tell: <green>Private X: %private_integer_plus:demo_x=2%, amount: %private_integer_plus:demo_amount=1%'
 
 
 close-without-actions:
   MATERIAL: REDSTONE_LAMP
   POSITION-X: 9
   POSITION-Y: 3
-  NAME: '&6Close the menu'
+  NAME: '<gold>Close the menu'
   LORE:
     - 'An icon without actions will just close'
     - 'the window when clicked.'
